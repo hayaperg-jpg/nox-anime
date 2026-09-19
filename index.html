@@ -1,15 +1,445 @@
-<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AnimeHub</title><link rel="stylesheet" href="style.css"></head><body>
-<header><b class="logo">ANIME<span>HUB</span></b><nav><a href="#home">Home</a><a href="#trending">Trending</a><a href="#genres">Genres</a><a href="#premium">Premium</a></nav>
-<div class="right">🪙 <b id="coins">10</b><button onclick="claim()">Daily +10</button><button class="pink" onclick="adminLogin()">Admin</button></div></header>
-<section id="home" class="hero"><div><small>#1 SPOTLIGHT</small><h1>SOLO<br><span>LEVELING</span></h1><p>Discover anime, earn 10 free coins every day and unlock premium days.</p><button class="pink big" onclick="watch('Solo Leveling')">▶ Watch Now</button></div></section>
-<div class="search"><input id="q" placeholder="Search anime..." oninput="render()"></div>
-<section id="trending"><h2>🔥 Anime Collection</h2><div id="grid" class="grid"></div></section>
-<section id="genres"><h2>Genres</h2><div id="genresBox" class="genres"></div></section>
-<section id="premium"><h2>👑 Premium</h2><div class="plans">
-<div><h3>7 Days</h3><strong>70 🪙</strong><p>Redeem coins.</p><button class="pink" onclick="redeem(70,7)">Redeem</button></div>
-<div><h3>30 Days</h3><strong>250 🪙</strong><p>Redeem coins.</p><button class="pink" onclick="redeem(250,30)">Redeem</button></div>
-<div><h3>Coin Pack</h3><strong>999 🪙</strong><p>Payment placeholder.</p><button onclick="alert('Connect a verified payment provider on the backend.')">Buy</button></div>
-</div></section>
-<div id="modal" class="modal hidden"><div class="box"><button class="x" onclick="closeM()">×</button><div id="body"></div></div></div>
-<script src="script.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>NOX Anime</title>
+
+  <meta name="theme-color" content="#08080d">
+  <meta name="description" content="NOX Anime - Stream your favorite anime">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ================= LOADING SCREEN ================= -->
+
+<div id="loader">
+  <div class="loader-logo">N</div>
+  <h2>NOX Anime</h2>
+  <div class="spinner"></div>
+  <span>Loading...</span>
+</div>
+
+
+<!-- ================= HEADER ================= -->
+
+<header class="topbar">
+
+  <a href="#home" class="brand">
+    <span class="logo">N</span>
+
+    <span>
+      NOX <i>ANIME</i>
+    </span>
+  </a>
+
+
+  <nav class="main-nav">
+
+    <a href="#home">Home</a>
+
+    <a href="#trending">Trending</a>
+
+    <a href="#latest">Latest</a>
+
+    <a href="#genres">Genres</a>
+
+    <a href="#watchlist">Watchlist</a>
+
+    <a href="#premium">Premium</a>
+
+  </nav>
+
+
+  <div class="actions">
+
+    <button id="coinBtn">
+      🪙 <b id="coins">0</b>
+    </button>
+
+    <button id="dailyBtn">
+      +10 Daily
+    </button>
+
+    <button id="loginBtn">
+      Login
+    </button>
+
+    <button id="adminBtn">
+      Admin
+    </button>
+
+  </div>
+
+</header>
+
+
+
+<!-- ================= MAIN ================= -->
+
+<main>
+
+
+<!-- ================= HERO ================= -->
+
+<section class="hero" id="home">
+
+  <div class="hero-copy">
+
+    <span class="pill">
+      NOX ORIGINAL • 4K READY
+    </span>
+
+    <h1>
+      Anime without
+      <br>
+      <em>limits.</em>
+    </h1>
+
+    <p>
+      Stream your favorite anime with multiple
+      languages, quality options, watchlist,
+      premium features and a clean modern
+      experience.
+    </p>
+
+
+    <div class="hero-buttons">
+
+      <button
+        class="primary"
+        onclick="openAnime('Solo Leveling')"
+      >
+        ▶ Watch Now
+      </button>
+
+
+      <button
+        class="ghost"
+        onclick="toggleWatch('Solo Leveling')"
+      >
+        ＋ Watchlist
+      </button>
+
+    </div>
+
+
+    <div class="stats">
+
+      <span>
+        <b>10K+</b>
+        Episodes
+      </span>
+
+      <span>
+        <b>8</b>
+        Languages
+      </span>
+
+      <span>
+        <b>4K</b>
+        Quality
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <div class="hero-art">
+
+    <div class="hero-card">
+
+      <span>
+        SOLO LEVELING
+      </span>
+
+      <strong>
+        LEVEL
+        <br>
+        UP.
+      </strong>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- ================= SEARCH ================= -->
+
+<section class="searchbar">
+
+  <input
+    id="search"
+    type="text"
+    placeholder="Search anime, genres, characters..."
+    oninput="runSearch()"
+  >
+
+  <button onclick="runSearch()">
+    ⌕
+  </button>
+
+</section>
+
+
+
+<!-- ================= TRENDING ================= -->
+
+<section id="trending">
+
+  <div class="section-head">
+
+    <div>
+
+      <span class="eyebrow">
+        DISCOVER
+      </span>
+
+      <h2>
+        Trending Now
+      </h2>
+
+    </div>
+
+    <a href="#latest">
+      View all →
+    </a>
+
+  </div>
+
+
+  <div
+    id="trendingGrid"
+    class="grid"
+  ></div>
+
+</section>
+
+
+
+<!-- ================= LATEST ================= -->
+
+<section id="latest">
+
+  <div class="section-head">
+
+    <div>
+
+      <span class="eyebrow">
+        JUST ADDED
+      </span>
+
+      <h2>
+        Latest Anime
+      </h2>
+
+    </div>
+
+  </div>
+
+
+  <div
+    id="latestGrid"
+    class="grid"
+  ></div>
+
+</section>
+
+
+
+<!-- ================= GENRES ================= -->
+
+<section id="genres">
+
+  <div class="section-head">
+
+    <div>
+
+      <span class="eyebrow">
+        EXPLORE
+      </span>
+
+      <h2>
+        Genres
+      </h2>
+
+    </div>
+
+  </div>
+
+
+  <div
+    id="genresGrid"
+    class="genre-grid"
+  ></div>
+
+</section>
+
+
+
+<!-- ================= WATCHLIST ================= -->
+
+<section id="watchlist">
+
+  <div class="section-head">
+
+    <div>
+
+      <span class="eyebrow">
+        YOUR LIBRARY
+      </span>
+
+      <h2>
+        Watchlist
+      </h2>
+
+    </div>
+
+  </div>
+
+
+  <div
+    id="watchGrid"
+    class="grid"
+  ></div>
+
+</section>
+
+
+
+<!-- ================= PREMIUM ================= -->
+
+<section
+  id="premium"
+  class="premium"
+>
+
+  <div>
+
+    <span class="eyebrow">
+      NOX PREMIUM
+    </span>
+
+    <h2>
+      Upgrade your anime experience.
+    </h2>
+
+    <p>
+      No ads, premium badge, higher quality
+      and authorized downloads when configured
+      by the content owner.
+    </p>
+
+  </div>
+
+
+  <div class="plans">
+
+    <div class="plan">
+
+      <b>
+        MONTHLY
+      </b>
+
+      <strong>
+        $2.99
+      </strong>
+
+      <span>
+        30 days
+      </span>
+
+      <button
+        onclick="buyPremium(30)"
+      >
+        Choose
+      </button>
+
+    </div>
+
+
+    <div class="plan featured">
+
+      <b>
+        YEARLY
+      </b>
+
+      <strong>
+        $19.99
+      </strong>
+
+      <span>
+        365 days
+      </span>
+
+      <button
+        onclick="buyPremium(365)"
+      >
+        Choose
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <small id="premiumStatus">
+    Free plan
+  </small>
+
+</section>
+
+</main>
+
+
+
+<!-- ================= MODAL ================= -->
+
+<div
+  id="modal"
+  class="modal"
+>
+
+  <div class="modal-box">
+
+    <button
+      class="close"
+      onclick="closeModal()"
+    >
+      ×
+    </button>
+
+    <div id="modalBody"></div>
+
+  </div>
+
+</div>
+
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+  © 2026 NOX Anime
+
+  <br>
+
+  Frontend demo. Use only content
+  you are authorized to distribute.
+
+</footer>
+
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
