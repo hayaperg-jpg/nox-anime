@@ -1,110 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NOX Anime</title>
-  <meta name="description" content="NOX Anime — discover trending anime, latest episodes and your next watch.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:Inter,Arial,sans-serif;background:#08090d;color:#f5f5f5}
-    a{text-decoration:none;color:inherit}
-    .nav{position:sticky;top:0;z-index:10;background:rgba(8,9,13,.88);backdrop-filter:blur(14px);border-bottom:1px solid #1c1e27}
-    .nav-inner{max-width:1200px;margin:auto;padding:16px 22px;display:flex;align-items:center;gap:28px}
-    .logo{font-size:25px;font-weight:800;letter-spacing:2px}.logo span{color:#ff315d}
-    .links{display:flex;gap:20px;color:#aaa;font-size:14px}.links a:hover{color:#fff}
-    .search{margin-left:auto;background:#12141b;border:1px solid #242733;border-radius:10px;padding:10px 13px;color:#ddd;outline:none;width:210px}
-    .hero{max-width:1200px;margin:auto;padding:80px 22px 65px;min-height:500px;display:flex;align-items:center}
-    .hero-copy{max-width:680px}
-    .eyebrow{color:#ff315d;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
-    h1{font-size:clamp(42px,7vw,76px);line-height:1.02;margin-bottom:20px}
-    .hero p{color:#aeb1bc;line-height:1.7;max-width:590px}
-    .buttons{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
-    .btn{padding:13px 19px;border-radius:10px;font-weight:700;font-size:14px;display:inline-block}
-    .primary{background:#ff315d;color:white}.secondary{background:#171922;border:1px solid #2a2d38}
-    .section{max-width:1200px;margin:auto;padding:25px 22px 55px}
-    .section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-    h2{font-size:24px}.muted{color:#777;font-size:13px}
-    .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
-    .card{background:#11131a;border:1px solid #20232d;border-radius:13px;overflow:hidden;transition:.2s}
-    .card:hover{transform:translateY(-4px);border-color:#393d4a}
-    .poster{height:260px;background:linear-gradient(145deg,#222532,#11131a);display:flex;align-items:center;justify-content:center;color:#777;font-weight:800;letter-spacing:1px}
-    .info{padding:13px}.title{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.meta{color:#777;font-size:12px;margin-top:6px}
-    .empty{padding:35px;border:1px dashed #2a2d38;border-radius:13px;color:#858894;text-align:center}
-    footer{border-top:1px solid #1c1e27;padding:30px 22px;color:#70737e;text-align:center;font-size:13px}
-    @media(max-width:900px){.grid{grid-template-columns:repeat(3,1fr)}.links{display:none}.search{width:160px}}
-    @media(max-width:600px){.nav-inner{gap:12px}.search{width:130px}.hero{padding-top:55px;min-height:420px}.grid{grid-template-columns:repeat(2,1fr)}.poster{height:220px}}
-  </style>
-</head>
-<body>
-  <nav class="nav">
-    <div class="nav-inner">
-      <a class="logo" href="#">NOX<span>ANIME</span></a>
-      <div class="links">
-        <a href="#home">Home</a><a href="#trending">Trending</a><a href="#latest">Latest</a>
-      </div>
-      <input id="search" class="search" placeholder="Search anime..." aria-label="Search anime">
-    </div>
-  </nav>
-
-  <main id="home">
-    <section class="hero">
-      <div class="hero-copy">
-        <div class="eyebrow">NOX Anime</div>
-        <h1>Your next anime<br>starts here.</h1>
-        <p>Discover trending series, explore the latest episodes and build your personal watchlist — all in a clean, mobile-friendly anime hub.</p>
-        <div class="buttons">
-          <a class="btn primary" href="#trending">Explore Anime</a>
-          <a class="btn secondary" href="#latest">Latest Episodes</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="trending">
-      <div class="section-head"><h2>🔥 Trending Anime</h2><span class="muted">Demo catalogue</span></div>
-      <div id="grid" class="grid"></div>
-    </section>
-
-    <section class="section" id="latest">
-      <div class="section-head"><h2>🎬 Latest Episodes</h2></div>
-      <div class="empty">Episode pages are ready to be connected to your own legal video sources or streaming provider.</div>
-    </section>
-  </main>
-
-  <footer>© 2026 NOX Anime • Built as a starter website</footer>
-
-  <script>
-    const anime = [
-      ["One Piece","Adventure • 12+","OP"],
-      ["Solo Leveling","Action • Fantasy","SL"],
-      ["Demon Slayer","Action • Fantasy","DS"],
-      ["Jujutsu Kaisen","Action • Supernatural","JK"],
-      ["Attack on Titan","Action • Drama","AOT"],
-      ["Naruto","Action • Adventure","NAR"],
-      ["Bleach","Action • Supernatural","BL"],
-      ["My Hero Academia","Action • School","MHA"],
-      ["Death Note","Mystery • Thriller","DN"],
-      ["Spy x Family","Comedy • Family","SXF"]
-    ];
-    const grid = document.getElementById("grid");
-    const search = document.getElementById("search");
-
-    function render(list){
-      grid.innerHTML = list.length ? list.map(a => `
-        <article class="card">
-          <div class="poster">${a[2]}</div>
-          <div class="info"><div class="title">${a[0]}</div><div class="meta">${a[1]}</div></div>
-        </article>`).join("") :
-        `<div class="empty" style="grid-column:1/-1">No anime found.</div>`;
-    }
-    render(anime);
-    search.addEventListener("input", e => {
-      const q = e.target.value.toLowerCase().trim();
-      render(anime.filter(a => a[0].toLowerCase().includes(q)));
-    });
-  </script>
-</body>
-</html>
+<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AnimeHub</title><link rel="stylesheet" href="style.css"></head><body>
+<header><b class="logo">ANIME<span>HUB</span></b><nav><a href="#home">Home</a><a href="#trending">Trending</a><a href="#genres">Genres</a><a href="#premium">Premium</a></nav>
+<div class="right">🪙 <b id="coins">10</b><button onclick="claim()">Daily +10</button><button class="pink" onclick="adminLogin()">Admin</button></div></header>
+<section id="home" class="hero"><div><small>#1 SPOTLIGHT</small><h1>SOLO<br><span>LEVELING</span></h1><p>Discover anime, earn 10 free coins every day and unlock premium days.</p><button class="pink big" onclick="watch('Solo Leveling')">▶ Watch Now</button></div></section>
+<div class="search"><input id="q" placeholder="Search anime..." oninput="render()"></div>
+<section id="trending"><h2>🔥 Anime Collection</h2><div id="grid" class="grid"></div></section>
+<section id="genres"><h2>Genres</h2><div id="genresBox" class="genres"></div></section>
+<section id="premium"><h2>👑 Premium</h2><div class="plans">
+<div><h3>7 Days</h3><strong>70 🪙</strong><p>Redeem coins.</p><button class="pink" onclick="redeem(70,7)">Redeem</button></div>
+<div><h3>30 Days</h3><strong>250 🪙</strong><p>Redeem coins.</p><button class="pink" onclick="redeem(250,30)">Redeem</button></div>
+<div><h3>Coin Pack</h3><strong>999 🪙</strong><p>Payment placeholder.</p><button onclick="alert('Connect a verified payment provider on the backend.')">Buy</button></div>
+</div></section>
+<div id="modal" class="modal hidden"><div class="box"><button class="x" onclick="closeM()">×</button><div id="body"></div></div></div>
+<script src="script.js"></script></body></html>
