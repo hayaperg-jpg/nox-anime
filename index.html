@@ -11,281 +11,328 @@
 
 <body>
 
-  <!-- HEADER -->
-  <header class="header">
+<header class="header">
 
-    <div class="logo">
-      NOX<span>ANIME</span>
+  <div class="logo">
+    NOX<span>ANIME</span>
+  </div>
+
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#trending">Trending</a>
+    <a href="#latest">Latest</a>
+    <a href="#genres">Genres</a>
+    <a href="#watchlist">Watchlist</a>
+    <a href="#premium">Premium</a>
+  </nav>
+
+  <div class="header-right">
+    <span>🪙 <b id="coins">10</b></span>
+    <button id="loginBtn">Login</button>
+  </div>
+
+</header>
+
+
+<!-- HERO -->
+
+<section id="home" class="hero">
+
+  <div class="hero-content">
+
+    <div class="badge">
+      NOX ANIME • #1 SPOTLIGHT
     </div>
 
-    <nav>
-      <a href="#home">Home</a>
-      <a href="#trending">Trending</a>
-      <a href="#latest">Latest</a>
-      <a href="#genres">Genres</a>
-      <a href="#watchlist">Watchlist</a>
-      <a href="#premium">Premium</a>
-    </nav>
+    <h1>
+      THAT TIME I GOT<br>
+      <span>REINCARNATED AS A SLIME</span>
+    </h1>
 
-    <div class="header-right">
-      <span>🪙 <b id="coins">10</b></span>
-      <button id="loginBtn">Login</button>
-    </div>
+    <p>
+      Watch your favorite anime online with NOX Anime.
+    </p>
 
-  </header>
+    <div class="hero-buttons">
 
-
-  <!-- HERO -->
-  <section id="home" class="hero">
-
-    <div class="hero-content">
-
-      <p class="small-title">NOX ANIME • #1 SPOTLIGHT</p>
-
-      <h1>
-        THAT TIME I GOT<br>
-        <span>REINCARNATED AS A SLIME</span>
-      </h1>
-
-      <p class="description">
-        Watch your favorite anime online with NOX Anime.
-      </p>
-
-      <div class="hero-buttons">
-        <button class="primary-btn" onclick="openAnime()">
-          ▶ Watch Now
-        </button>
-
-        <button class="secondary-btn" onclick="addWatchlist()">
-          ＋ Watchlist
-        </button>
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- SEARCH -->
-  <section class="search-section">
-
-    <input
-      id="search"
-      type="text"
-      placeholder="Search anime..."
-      oninput="searchAnime()"
-    >
-
-  </section>
-
-
-  <!-- TRENDING -->
-  <section id="trending" class="section">
-
-    <div class="section-title">
-      <h2>🔥 Trending Anime</h2>
-      <span>View All</span>
-    </div>
-
-    <div id="trendingGrid" class="anime-grid">
-
-      <div class="anime-card" onclick="openAnime()">
-
-        <div class="poster">
-          <div class="poster-placeholder">
-            SLIME
-          </div>
-        </div>
-
-        <div class="anime-info">
-
-          <h3>That Time I Got Reincarnated as a Slime</h3>
-
-          <p>
-            Action • Fantasy • Isekai
-          </p>
-
-          <span class="rating">
-            ⭐ 8.5
-          </span>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- LATEST -->
-  <section id="latest" class="section">
-
-    <div class="section-title">
-      <h2>🆕 Latest Episodes</h2>
-    </div>
-
-    <div id="latestGrid" class="anime-grid"></div>
-
-  </section>
-
-
-  <!-- GENRES -->
-  <section id="genres" class="section">
-
-    <div class="section-title">
-      <h2>🎭 Genres</h2>
-    </div>
-
-    <div class="genres">
-
-      <button>Action</button>
-      <button>Adventure</button>
-      <button>Fantasy</button>
-      <button>Isekai</button>
-      <button>Comedy</button>
-      <button>Romance</button>
-      <button>Horror</button>
-      <button>Sports</button>
-
-    </div>
-
-  </section>
-
-
-  <!-- WATCHLIST -->
-  <section id="watchlist" class="section">
-
-    <div class="section-title">
-      <h2>❤️ My Watchlist</h2>
-    </div>
-
-    <div id="watchlistGrid" class="anime-grid">
-
-      <p class="empty">
-        Your watchlist is empty.
-      </p>
-
-    </div>
-
-  </section>
-
-
-  <!-- PREMIUM -->
-  <section id="premium" class="section premium-section">
-
-    <div class="premium-box">
-
-      <div>
-        <p class="small-title">NOX PREMIUM</p>
-
-        <h2>Unlock Premium Anime</h2>
-
-        <p>
-          Enjoy premium features, downloads and high-quality streaming.
-        </p>
-      </div>
-
-      <button class="primary-btn">
-        👑 Get Premium
+      <button class="primary-btn" onclick="openAnime()">
+        ▶ Watch Now
       </button>
 
-    </div>
-
-  </section>
-
-
-  <!-- VIDEO MODAL -->
-  <div id="videoModal" class="modal">
-
-    <div class="video-box">
-
-      <button class="close-btn" onclick="closeAnime()">
-        ✕
+      <button class="secondary-btn" onclick="addWatchlist()">
+        ＋ Watchlist
       </button>
-
-      <h2>
-        That Time I Got Reincarnated as a Slime
-      </h2>
-
-      <p class="episode-info">
-        Episode 1
-      </p>
-
-      <!-- VIDEO PLAYER -->
-      <video
-        id="animeVideo"
-        class="video-player"
-        controls
-        playsinline
-        preload="metadata"
-      >
-
-        <!--
-        BAAD MEIN YAHAN TUMHARI VIDEO KA
-        ONLINE MP4 URL LAGAYENGE.
-        -->
-
-        <source
-          src="YOUR_VIDEO_URL_HERE.mp4"
-          type="video/mp4"
-        >
-
-        Your browser does not support video playback.
-
-      </video>
-
-
-      <!-- PLAYER CONTROLS -->
-      <div class="player-controls">
-
-        <select id="quality">
-          <option>Auto Quality</option>
-          <option>720p HD</option>
-          <option>1080p Full HD</option>
-          <option>1440p QHD</option>
-          <option>4K Ultra HD</option>
-        </select>
-
-        <select id="audio">
-
-          <option>Japanese / Original</option>
-          <option>Hindi</option>
-          <option>English</option>
-          <option>Urdu</option>
-          <option>Spanish</option>
-          <option>French</option>
-          <option>German</option>
-          <option>Korean</option>
-
-        </select>
-
-        <button onclick="downloadVideo()">
-          ⬇ Download
-        </button>
-
-      </div>
 
     </div>
 
   </div>
 
+</section>
 
-  <!-- FOOTER -->
-  <footer>
 
-    <div class="logo">
-      NOX<span>ANIME</span>
+<!-- SEARCH -->
+
+<section class="search-section">
+
+  <input
+    id="search"
+    type="text"
+    placeholder="🔎 Search anime..."
+    oninput="searchAnime()"
+  >
+
+</section>
+
+
+<!-- TRENDING -->
+
+<section id="trending" class="section">
+
+  <div class="section-heading">
+    <h2>🔥 Trending Anime</h2>
+    <span>View All</span>
+  </div>
+
+  <div id="trendingGrid" class="anime-grid">
+
+    <article class="anime-card" onclick="openAnime()">
+
+      <div class="poster">
+
+        <div class="poster-text">
+          SLIME
+        </div>
+
+      </div>
+
+      <div class="anime-info">
+
+        <h3>That Time I Got Reincarnated as a Slime</h3>
+
+        <p>
+          Action • Fantasy • Isekai
+        </p>
+
+        <div class="rating">
+          ⭐ 8.5
+        </div>
+
+      </div>
+
+    </article>
+
+  </div>
+
+</section>
+
+
+<!-- LATEST -->
+
+<section id="latest" class="section">
+
+  <div class="section-heading">
+    <h2>🆕 Latest Episodes</h2>
+  </div>
+
+  <div id="latestGrid" class="anime-grid">
+
+    <article class="anime-card" onclick="openAnime()">
+
+      <div class="poster">
+        <div class="poster-text">
+          EP 1
+        </div>
+      </div>
+
+      <div class="anime-info">
+
+        <h3>That Time I Got Reincarnated as a Slime</h3>
+
+        <p>Episode 1</p>
+
+        <div class="rating">
+          ⭐ 8.5
+        </div>
+
+      </div>
+
+    </article>
+
+  </div>
+
+</section>
+
+
+<!-- GENRES -->
+
+<section id="genres" class="section">
+
+  <div class="section-heading">
+    <h2>🎭 Genres</h2>
+  </div>
+
+  <div class="genres">
+
+    <button>Action</button>
+    <button>Adventure</button>
+    <button>Fantasy</button>
+    <button>Isekai</button>
+    <button>Comedy</button>
+    <button>Romance</button>
+    <button>Horror</button>
+    <button>Sports</button>
+
+  </div>
+
+</section>
+
+
+<!-- WATCHLIST -->
+
+<section id="watchlist" class="section">
+
+  <div class="section-heading">
+    <h2>❤️ My Watchlist</h2>
+  </div>
+
+  <div id="watchlistGrid" class="watchlist-empty">
+
+    Your watchlist is empty.
+
+  </div>
+
+</section>
+
+
+<!-- PREMIUM -->
+
+<section id="premium" class="section">
+
+  <div class="premium-box">
+
+    <div>
+
+      <div class="badge">
+        NOX PREMIUM
+      </div>
+
+      <h2>Unlock Premium Anime</h2>
+
+      <p>
+        Enjoy premium streaming, downloads and more.
+      </p>
+
     </div>
 
-    <p>
-      © 2026 NOX Anime. All rights reserved.
+    <button class="primary-btn">
+      👑 Get Premium
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- VIDEO MODAL -->
+
+<div id="videoModal" class="modal hidden">
+
+  <div class="video-box">
+
+    <button class="close-btn" onclick="closeAnime()">
+      ×
+    </button>
+
+    <h2>
+      That Time I Got Reincarnated as a Slime
+    </h2>
+
+    <p class="episode">
+      Episode 1
     </p>
 
-  </footer>
+
+    <!-- VIDEO -->
+
+    <video
+      id="animeVideo"
+      class="video-player"
+      controls
+      playsinline
+      preload="metadata"
+    >
+
+      <!--
+      BAAD MEIN YAHAN APNI AUTHORIZED
+      MP4 VIDEO URL LAGANA HAI.
+      -->
+
+      <source
+        src="YOUR_VIDEO_URL_HERE.mp4"
+        type="video/mp4"
+      >
+
+      Your browser does not support video playback.
+
+    </video>
 
 
-  <script src="script.js"></script>
+    <!-- CONTROLS -->
+
+    <div class="player-controls">
+
+      <select id="quality">
+
+        <option>Auto Quality</option>
+        <option>720p HD</option>
+        <option>1080p Full HD</option>
+        <option>1440p QHD</option>
+        <option>4K Ultra HD</option>
+
+      </select>
+
+
+      <select id="audio">
+
+        <option>Japanese / Original</option>
+        <option>Hindi</option>
+        <option>English</option>
+        <option>Urdu</option>
+        <option>Spanish</option>
+        <option>French</option>
+        <option>German</option>
+        <option>Korean</option>
+
+      </select>
+
+
+      <button onclick="downloadVideo()">
+        ⬇ Download
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+  <div class="logo">
+    NOX<span>ANIME</span>
+  </div>
+
+  <p>
+    © 2026 NOX Anime
+  </p>
+
+</footer>
+
+
+<script src="script.js"></script>
 
 </body>
 </html>
