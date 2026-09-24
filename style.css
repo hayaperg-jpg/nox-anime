@@ -8,8 +8,8 @@ html {
 
 body {
   margin: 0;
-  background: #030814;
-  color: #ffffff;
+  background: #020711;
+  color: #fff;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -24,27 +24,36 @@ button {
 }
 
 
-/* HEADER */
+/* ================= HEADER ================= */
 
 .header {
-  height: 70px;
+  height: 72px;
   padding: 0 5%;
+
   display: flex;
   align-items: center;
-  gap: 35px;
+  gap: 32px;
 
-  background: rgba(3, 8, 20, 0.96);
-  border-bottom: 1px solid #10243d;
+  background: rgba(2, 7, 17, .96);
+
+  border-bottom: 1px solid #10263f;
 
   position: sticky;
   top: 0;
+
   z-index: 50;
 }
 
 .logo {
+  color: #fff;
+
+  text-decoration: none;
+
   font-size: 23px;
   font-weight: 900;
+
   letter-spacing: 1px;
+
   white-space: nowrap;
 }
 
@@ -54,73 +63,129 @@ button {
 
 nav {
   display: flex;
-  gap: 24px;
+  gap: 22px;
+
   flex: 1;
 }
 
 nav a {
-  color: #9aa9bd;
+  color: #8799ae;
+
   text-decoration: none;
+
   font-size: 14px;
+
+  transition: .2s;
 }
 
 nav a:hover {
-  color: #ffffff;
+  color: #fff;
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+
+  gap: 10px;
 }
 
-.header-right button {
-  border: 1px solid #1d4268;
-  background: #0b1626;
-  color: white;
-  padding: 9px 15px;
-  border-radius: 8px;
+.coins {
+  color: #fff;
+
+  white-space: nowrap;
+}
+
+.login-btn,
+.admin-btn {
+  padding: 10px 15px;
+
+  border-radius: 9px;
+
+  background: #09182a;
+
+  color: #fff;
+
+  border: 1px solid #1b4268;
+}
+
+.login-btn:hover,
+.admin-btn:hover {
+  border-color: #168cff;
 }
 
 
-/* HERO */
+/* ================= HERO ================= */
 
 .hero {
-  min-height: 590px;
+  min-height: 620px;
+
+  position: relative;
 
   display: flex;
   align-items: center;
 
   padding: 80px 7%;
 
-  background:
-    radial-gradient(circle at 75% 40%, #0b315a 0%, transparent 35%),
-    linear-gradient(90deg, #030814 15%, #030814dd 45%, #03081455 100%);
+  overflow: hidden;
 
-  border-bottom: 1px solid #0c1d32;
+  border-bottom: 1px solid #10243b;
+}
+
+.hero-background {
+  position: absolute;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      #020711 5%,
+      #020711dd 40%,
+      #02071188 70%,
+      #020711ee 100%
+    ),
+    linear-gradient(
+      0deg,
+      #020711 0%,
+      transparent 50%,
+      #020711 100%
+    ),
+    url("slime-s4.webp");
+
+  background-size: cover;
+  background-position: center 25%;
+
+  filter: saturate(1.15);
+
+  z-index: 0;
 }
 
 .hero-content {
-  max-width: 850px;
+  position: relative;
+
+  z-index: 2;
+
+  max-width: 800px;
 }
 
-.badge {
-  display: inline-block;
+.badge,
+.section-label {
+  color: #42afff;
 
-  color: #55b9ff;
   font-size: 12px;
-  font-weight: bold;
+
+  font-weight: 800;
 
   letter-spacing: 1.5px;
-
-  margin-bottom: 15px;
 }
 
 .hero h1 {
-  margin: 0;
+  margin: 15px 0;
 
-  font-size: clamp(42px, 6vw, 82px);
-  line-height: 0.95;
+  font-size: clamp(40px, 6vw, 78px);
+
+  line-height: .94;
+
   font-weight: 900;
 }
 
@@ -129,72 +194,109 @@ nav a:hover {
 }
 
 .hero p {
-  color: #9aa9bd;
-  max-width: 580px;
+  max-width: 600px;
+
+  color: #a0b0c3;
+
   font-size: 17px;
+
   line-height: 1.7;
-  margin: 25px 0;
+}
+
+.meta {
+  display: flex;
+
+  gap: 10px;
+
+  margin: 18px 0;
+
+  color: #b8c6d6;
+
+  font-size: 14px;
+}
+
+.meta span:first-child {
+  color: #ffd166;
 }
 
 .hero-buttons {
   display: flex;
+
   gap: 12px;
+
+  margin-top: 25px;
+
   flex-wrap: wrap;
 }
 
 
-/* BUTTONS */
+/* ================= BUTTONS ================= */
 
 .primary-btn {
-  background: #168cff;
-  color: white;
-
   border: none;
-  border-radius: 9px;
+
+  background: #168cff;
+
+  color: #fff;
 
   padding: 13px 22px;
 
-  font-weight: bold;
+  border-radius: 9px;
+
+  font-weight: 700;
+
+  transition: .2s;
 }
 
 .primary-btn:hover {
   background: #0879e8;
+
+  transform: translateY(-1px);
 }
 
 .secondary-btn {
-  background: #0c1829;
-  color: white;
+  border: 1px solid #214563;
 
-  border: 1px solid #1b3c60;
+  background: #071525;
 
-  border-radius: 9px;
+  color: #fff;
 
   padding: 13px 22px;
+
+  border-radius: 9px;
+}
+
+.secondary-btn:hover {
+  border-color: #168cff;
 }
 
 
-/* SEARCH */
+/* ================= SEARCH ================= */
 
 .search-section {
   max-width: 1150px;
+
   margin: 30px auto;
+
   padding: 0 20px;
 }
 
 .search-section input {
   width: 100%;
 
-  padding: 16px 18px;
+  padding: 17px 20px;
 
-  background: #081321;
-
-  color: white;
-
-  border: 1px solid #17324f;
-
-  border-radius: 10px;
+  border-radius: 11px;
 
   outline: none;
+
+  border: 1px solid #173550;
+
+  background: #071322;
+
+  color: #fff;
+
+  font-size: 16px;
 }
 
 .search-section input:focus {
@@ -202,34 +304,40 @@ nav a:hover {
 }
 
 
-/* SECTIONS */
+/* ================= SECTION ================= */
 
 .section {
   max-width: 1200px;
-  margin: 55px auto;
+
+  margin: 60px auto;
+
   padding: 0 20px;
 }
 
 .section-heading {
   display: flex;
-  align-items: center;
+
   justify-content: space-between;
 
-  margin-bottom: 20px;
+  align-items: center;
+
+  margin-bottom: 22px;
 }
 
 .section-heading h2 {
-  margin: 0;
-  font-size: 25px;
+  margin: 7px 0 0;
+
+  font-size: 27px;
 }
 
-.section-heading span {
+.view-all {
   color: #168cff;
+
   font-size: 13px;
 }
 
 
-/* GRID */
+/* ================= GRID ================= */
 
 .anime-grid {
   display: grid;
@@ -240,80 +348,147 @@ nav a:hover {
 }
 
 
-/* CARD */
+/* ================= CARD ================= */
 
 .anime-card {
-  background: #07111f;
-
-  border: 1px solid #122a44;
-
-  border-radius: 12px;
-
   overflow: hidden;
+
+  background: #07111e;
+
+  border: 1px solid #122b44;
+
+  border-radius: 13px;
 
   cursor: pointer;
 
-  transition: 0.2s;
+  transition: .25s;
 }
 
 .anime-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
 
   border-color: #168cff;
+
+  box-shadow: 0 12px 35px rgba(0, 105, 255, .16);
 }
 
 .poster {
-  height: 270px;
+  height: 285px;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background: #061020;
+}
+
+.poster img {
+  width: 100%;
+
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  object-position: center;
+}
+
+.poster-overlay {
+  position: absolute;
+
+  inset: 0;
 
   display: flex;
 
   align-items: center;
+
   justify-content: center;
 
-  background:
-    radial-gradient(circle, #0e477a 0%, #061020 65%);
+  background: rgba(0, 0, 0, .55);
+
+  color: #fff;
+
+  font-weight: 800;
+
+  opacity: 0;
+
+  transition: .2s;
 }
 
-.poster-text {
-  color: #55b9ff;
+.anime-card:hover .poster-overlay {
+  opacity: 1;
+}
 
-  font-size: 30px;
+.episode-badge {
+  position: absolute;
 
-  font-weight: 900;
+  left: 10px;
+  top: 10px;
 
-  letter-spacing: 2px;
+  padding: 6px 9px;
+
+  border-radius: 6px;
+
+  background: #168cff;
+
+  color: #fff;
+
+  font-size: 11px;
+
+  font-weight: 800;
 }
 
 .anime-info {
-  padding: 13px;
+  padding: 14px;
 }
 
 .anime-info h3 {
   margin: 0 0 8px;
 
-  font-size: 15px;
+  font-size: 14px;
 
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .anime-info p {
   margin: 0;
 
-  color: #71839a;
+  color: #73869b;
 
   font-size: 12px;
 }
 
-.rating {
-  margin-top: 10px;
+.card-bottom {
+  display: flex;
 
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-top: 11px;
+}
+
+.rating {
   color: #ffd166;
 
   font-size: 13px;
 }
 
+.hd {
+  color: #4bb2ff;
 
-/* GENRES */
+  border: 1px solid #1a4265;
+
+  padding: 3px 6px;
+
+  border-radius: 4px;
+
+  font-size: 9px;
+}
+
+
+/* ================= GENRES ================= */
 
 .genres {
   display: flex;
@@ -326,41 +501,44 @@ nav a:hover {
 .genres button {
   padding: 11px 16px;
 
-  background: #081525;
-
-  color: #c8d4e2;
-
-  border: 1px solid #183551;
-
   border-radius: 8px;
+
+  border: 1px solid #173550;
+
+  background: #071525;
+
+  color: #aebed0;
 }
 
 .genres button:hover {
+  color: #fff;
+
   border-color: #168cff;
-  color: white;
 }
 
 
-/* WATCHLIST */
+/* ================= WATCHLIST ================= */
 
 .watchlist-empty {
-  padding: 30px;
+  padding: 35px;
 
-  background: #07111f;
-
-  border: 1px solid #122a44;
+  border: 1px solid #122b44;
 
   border-radius: 12px;
 
-  color: #71839a;
+  background: #07111e;
 
   text-align: center;
+
+  color: #73869b;
 }
 
 
-/* PREMIUM */
+/* ================= PREMIUM ================= */
 
 .premium-box {
+  padding: 35px;
+
   display: flex;
 
   justify-content: space-between;
@@ -369,28 +547,69 @@ nav a:hover {
 
   gap: 25px;
 
-  padding: 35px;
+  border: 1px solid #174a78;
+
+  border-radius: 16px;
 
   background:
-    linear-gradient(120deg, #071b32, #06101e);
+    radial-gradient(
+      circle at 80% 50%,
+      #073765,
+      transparent 50%
+    ),
+    #071525;
+}
 
-  border: 1px solid #17456f;
+.premium-icon {
+  font-size: 30px;
 
-  border-radius: 15px;
+  margin-bottom: 8px;
 }
 
 .premium-box h2 {
-  margin: 0 0 10px;
+  margin: 10px 0;
 
-  font-size: 30px;
+  font-size: 32px;
 }
 
 .premium-box p {
-  color: #8496aa;
+  max-width: 550px;
+
+  color: #8ea0b4;
+
+  line-height: 1.6;
+}
+
+.premium-plans {
+  display: flex;
+
+  gap: 10px;
+}
+
+.plan {
+  min-width: 110px;
+
+  padding: 15px;
+
+  border: 1px solid #21496e;
+
+  border-radius: 10px;
+
+  background: #07111f;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.plan span {
+  color: #42afff;
 }
 
 
-/* MODAL */
+/* ================= MODAL ================= */
 
 .modal {
   position: fixed;
@@ -399,22 +618,24 @@ nav a:hover {
 
   z-index: 100;
 
-  background: rgba(0, 0, 0, 0.88);
+  padding: 20px;
 
   display: flex;
 
-  align-items: center;
   justify-content: center;
 
-  padding: 20px;
+  align-items: center;
+
+  background: rgba(0, 0, 0, .9);
 }
 
 .hidden {
   display: none !important;
 }
 
-.video-box {
-  width: min(900px, 100%);
+.video-box,
+.admin-box {
+  width: min(920px, 100%);
 
   max-height: 92vh;
 
@@ -424,47 +645,51 @@ nav a:hover {
 
   padding: 25px;
 
-  background: #07111f;
-
-  border: 1px solid #1a3855;
-
   border-radius: 15px;
-}
 
-.video-box h2 {
-  margin: 0 40px 5px 0;
-}
+  border: 1px solid #1b3e60;
 
-.episode {
-  color: #71839a;
+  background: #07111e;
 }
 
 .close-btn {
   position: absolute;
 
-  right: 15px;
+  right: 14px;
+
   top: 12px;
 
   width: 40px;
-  height: 40px;
 
-  border: none;
+  height: 40px;
 
   border-radius: 50%;
 
-  background: #102238;
+  border: 1px solid #214563;
 
-  color: white;
+  background: #0b1c2e;
 
-  font-size: 28px;
+  color: #fff;
+
+  font-size: 27px;
 }
 
 .close-btn:hover {
   background: #168cff;
 }
 
+.video-box h2 {
+  margin: 8px 45px 5px 0;
 
-/* VIDEO */
+  font-size: 24px;
+}
+
+.video-header p {
+  color: #75889d;
+}
+
+
+/* ================= VIDEO ================= */
 
 .video-player {
   width: 100%;
@@ -477,13 +702,13 @@ nav a:hover {
 
   background: #000;
 
-  border: 1px solid #1a3855;
-
   border-radius: 10px;
+
+  border: 1px solid #183651;
 }
 
 
-/* PLAYER CONTROLS */
+/* ================= PLAYER CONTROLS ================= */
 
 .player-controls {
   display: grid;
@@ -496,47 +721,156 @@ nav a:hover {
 }
 
 .player-controls select,
-.player-controls button {
-  padding: 11px;
+.download-btn {
+  min-height: 44px;
 
   border-radius: 8px;
 
-  border: 1px solid #1a3855;
+  border: 1px solid #1b3d5d;
 
-  background: #0b1a2c;
+  background: #0a1929;
 
-  color: white;
+  color: #fff;
+
+  padding: 10px;
 }
 
-.player-controls button:hover {
+.download-btn:hover {
   background: #168cff;
 }
 
 
-/* FOOTER */
+/* ================= ADMIN ================= */
+
+.admin-box {
+  max-width: 650px;
+}
+
+.admin-box h2 {
+  margin-top: 8px;
+
+  font-size: 30px;
+}
+
+.admin-login {
+  display: grid;
+
+  gap: 10px;
+
+  margin-top: 25px;
+}
+
+.admin-login input {
+  width: 100%;
+
+  padding: 13px;
+
+  border-radius: 8px;
+
+  border: 1px solid #1a3b59;
+
+  background: #06101c;
+
+  color: white;
+
+  outline: none;
+}
+
+.admin-login input:focus {
+  border-color: #168cff;
+}
+
+.admin-dashboard {
+  margin-top: 25px;
+}
+
+.admin-cards {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 10px;
+
+  margin: 20px 0;
+}
+
+.admin-cards div {
+  padding: 20px;
+
+  background: #081727;
+
+  border: 1px solid #173550;
+
+  border-radius: 10px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.admin-cards strong {
+  font-size: 25px;
+
+  color: #42afff;
+}
+
+.admin-cards span {
+  color: #73869b;
+
+  font-size: 12px;
+}
+
+.admin-action {
+  width: 100%;
+
+  padding: 12px;
+
+  margin-bottom: 8px;
+
+  border-radius: 8px;
+
+  background: #091a2c;
+
+  color: white;
+
+  border: 1px solid #193d5d;
+}
+
+.admin-action:hover {
+  border-color: #168cff;
+}
+
+
+/* ================= FOOTER ================= */
 
 footer {
-  margin-top: 80px;
+  margin-top: 90px;
 
-  padding: 35px 20px;
+  padding: 40px 20px;
 
   text-align: center;
 
-  background: #02060d;
+  background: #01050b;
 
-  border-top: 1px solid #10243d;
+  border-top: 1px solid #10253d;
 }
 
 footer p {
-  color: #66778c;
+  color: #62758b;
 
   font-size: 13px;
 }
 
+.footer-note {
+  font-size: 11px;
+}
 
-/* MOBILE */
 
-@media (max-width: 900px) {
+/* ================= MOBILE ================= */
+
+@media (max-width: 950px) {
 
   nav {
     display: none;
@@ -548,39 +882,77 @@ footer p {
 
 }
 
-@media (max-width: 600px) {
+@media (max-width: 650px) {
 
   .header {
-    padding: 0 15px;
+    padding: 0 14px;
+
+    gap: 10px;
   }
 
-  .header-right {
+  .logo {
+    font-size: 19px;
+  }
+
+  .coins {
     margin-left: auto;
   }
 
+  .admin-btn {
+    display: none;
+  }
+
   .hero {
-    min-height: 500px;
-    padding: 60px 20px;
+    min-height: 570px;
+
+    padding: 55px 22px;
+  }
+
+  .hero-background {
+    background-position: 60% center;
   }
 
   .hero h1 {
     font-size: 42px;
   }
 
+  .hero p {
+    font-size: 15px;
+  }
+
+  .meta {
+    flex-wrap: wrap;
+  }
+
   .anime-grid {
     grid-template-columns: repeat(2, 1fr);
+
+    gap: 11px;
   }
 
   .poster {
-    height: 220px;
+    height: 240px;
   }
 
   .premium-box {
     flex-direction: column;
+
     align-items: flex-start;
   }
 
+  .premium-plans {
+    width: 100%;
+  }
+
+  .plan {
+    flex: 1;
+  }
+
   .player-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-cards {
     grid-template-columns: 1fr;
   }
 
@@ -590,6 +962,10 @@ footer p {
 
   .anime-grid {
     grid-template-columns: 1fr;
+  }
+
+  .poster {
+    height: 300px;
   }
 
 }
