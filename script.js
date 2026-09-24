@@ -1,24 +1,33 @@
-/* =========================
+/* =====================================
    NOX ANIME
-   ========================= */
+   ===================================== */
 
 
-/* DATA */
+/* ================= DATA ================= */
 
-const anime = {
+const animeData = {
+
   name: "That Time I Got Reincarnated as a Slime",
-  episode: "Episode 1"
+
+  season: "Season 4",
+
+  episode: "Episode 1",
+
+  year: "2026",
+
+  rating: "8.5"
+
 };
 
 
-/* ELEMENT HELPER */
+/* ================= HELPERS ================= */
 
 function $(id) {
   return document.getElementById(id);
 }
 
 
-/* COINS */
+/* ================= COINS ================= */
 
 let coins = Number(
   localStorage.getItem("nox_coins") || 10
@@ -27,47 +36,49 @@ let coins = Number(
 $("coins").textContent = coins;
 
 
-/* WATCHLIST */
+/* ================= WATCHLIST ================= */
 
 let watchlisted =
   localStorage.getItem("nox_watchlist") === "true";
 
 
-/* =========================
-   OPEN VIDEO
-   ========================= */
+/* ================= OPEN ANIME ================= */
 
 function openAnime() {
 
-  $("videoModal").classList.remove("hidden");
+  const modal = $("videoModal");
 
-  const video = $("animeVideo");
+  modal.classList.remove("hidden");
 
-  video.pause();
+  document.body.style.overflow = "hidden";
 
 }
 
 
-/* =========================
-   CLOSE VIDEO
-   ========================= */
+/* ================= CLOSE ANIME ================= */
 
 function closeAnime() {
 
+  const modal = $("videoModal");
+
   const video = $("animeVideo");
 
-  video.pause();
+  if (video) {
 
-  video.currentTime = 0;
+    video.pause();
 
-  $("videoModal").classList.add("hidden");
+    video.currentTime = 0;
+
+  }
+
+  modal.classList.add("hidden");
+
+  document.body.style.overflow = "";
 
 }
 
 
-/* =========================
-   WATCHLIST
-   ========================= */
+/* ================= WATCHLIST ================= */
 
 function addWatchlist() {
 
@@ -87,15 +98,29 @@ function updateWatchlist() {
 
   const box = $("watchlistGrid");
 
+  if (!box) return;
+
+
   if (watchlisted) {
 
     box.innerHTML = `
-      <div class="anime-card" onclick="openAnime()">
+
+      <article
+        class="anime-card"
+        onclick="openAnime()"
+      >
 
         <div class="poster">
-          <div class="poster-text">
-            SLIME
+
+          <img
+            src="slime-s4.webp"
+            alt="That Time I Got Reincarnated as a Slime"
+          >
+
+          <div class="poster-overlay">
+            ▶ Watch
           </div>
+
         </div>
 
         <div class="anime-info">
@@ -105,12 +130,25 @@ function updateWatchlist() {
           </h3>
 
           <p>
-            Action • Fantasy • Isekai
+            Season 4 • Fantasy • Isekai
           </p>
+
+          <div class="card-bottom">
+
+            <span class="rating">
+              ⭐ 8.5
+            </span>
+
+            <span class="hd">
+              HD
+            </span>
+
+          </div>
 
         </div>
 
-      </div>
+      </article>
+
     `;
 
   } else {
@@ -123,22 +161,27 @@ function updateWatchlist() {
 }
 
 
-/* =========================
-   SEARCH
-   ========================= */
+/* ================= SEARCH ================= */
 
 function searchAnime() {
 
   const value =
-    $("search").value.toLowerCase();
+    $("search").value
+      .trim()
+      .toLowerCase();
+
 
   const cards =
-    document.querySelectorAll(".anime-card");
+    document.querySelectorAll(
+      ".anime-card"
+    );
+
 
   cards.forEach(card => {
 
     const text =
       card.innerText.toLowerCase();
+
 
     if (text.includes(value)) {
 
@@ -155,22 +198,27 @@ function searchAnime() {
 }
 
 
-/* =========================
-   DOWNLOAD
-   ========================= */
+/* ================= VIDEO DOWNLOAD ================= */
 
 function downloadVideo() {
 
   const video =
     $("animeVideo");
 
+
+  if (!video) return;
+
+
   const source =
     video.querySelector("source");
+
 
   if (
     !source ||
     !source.src ||
-    source.src.includes("YOUR_VIDEO_URL_HERE")
+    source.src.includes(
+      "YOUR_VIDEO_URL_HERE"
+    )
   ) {
 
     alert(
@@ -181,13 +229,16 @@ function downloadVideo() {
 
   }
 
+
   const link =
     document.createElement("a");
+
 
   link.href = source.src;
 
   link.download =
     "That-Time-I-Got-Reincarnated-as-a-Slime-Episode-1.mp4";
+
 
   document.body.appendChild(link);
 
@@ -198,50 +249,62 @@ function downloadVideo() {
 }
 
 
-/* =========================
-   LOGIN
-   ========================= */
+/* ================= LOGIN ================= */
 
 $("loginBtn").addEventListener(
   "click",
   function () {
 
-    const name =
-      prompt("Enter your username:");
+    const username =
+      prompt(
+        "Enter your username:"
+      );
 
-    if (!name) return;
+
+    if (!username) return;
+
+
+    localStorage.setItem(
+      "nox_username",
+      username
+    );
+
 
     alert(
-      "Welcome to NOX Anime, " + name + "!"
+      "Welcome to NOX Anime, " +
+      username +
+      "!"
     );
 
   }
 );
 
 
-/* =========================
-   QUALITY
-   ========================= */
+/* ================= QUALITY ================= */
 
 $("quality").addEventListener(
   "change",
   function () {
 
-    const quality =
+    const selected =
       this.value;
 
+
+    if (selected === "auto") {
+      return;
+    }
+
+
     alert(
-      quality +
-      " selected. Actual quality switching requires authorized video streams."
+      selected +
+      " selected.\n\nActual quality switching requires separate authorized video streams."
     );
 
   }
 );
 
 
-/* =========================
-   AUDIO
-   ========================= */
+/* ================= AUDIO ================= */
 
 $("audio").addEventListener(
   "change",
@@ -250,18 +313,91 @@ $("audio").addEventListener(
     const language =
       this.value;
 
+
     alert(
       language +
-      " selected. Actual audio switching requires an authorized audio track."
+      " selected.\n\nActual audio switching requires an authorized audio track."
     );
 
   }
 );
 
 
-/* =========================
-   ESC KEY
-   ========================= */
+/* ================= ADMIN ================= */
+
+function openAdmin() {
+
+  $("adminModal")
+    .classList
+    .remove("hidden");
+
+  document.body.style.overflow = "hidden";
+
+}
+
+
+function closeAdmin() {
+
+  $("adminModal")
+    .classList
+    .add("hidden");
+
+  document.body.style.overflow = "";
+
+}
+
+
+/* ================= ADMIN LOGIN ================= */
+
+/*
+   DEMO LOGIN ONLY.
+
+   Super Admin:
+   Username: superadmin
+   Password: ANIMEADMIN
+*/
+
+function adminLogin() {
+
+  const username =
+    $("adminUser").value.trim();
+
+  const password =
+    $("adminPassword").value;
+
+
+  if (
+    username === "superadmin" &&
+    password === "ANIMEADMIN"
+  ) {
+
+    $("adminDashboard")
+      .classList
+      .remove("hidden");
+
+
+    document
+      .querySelector(".admin-login")
+      .style.display = "none";
+
+
+    alert(
+      "Super Admin login successful."
+    );
+
+
+  } else {
+
+    alert(
+      "Wrong username or password."
+    );
+
+  }
+
+}
+
+
+/* ================= ESC KEY ================= */
 
 document.addEventListener(
   "keydown",
@@ -271,14 +407,44 @@ document.addEventListener(
 
       closeAnime();
 
+      closeAdmin();
+
     }
 
   }
 );
 
 
-/* =========================
-   START
-   ========================= */
+/* ================= MODAL BACKDROP ================= */
+
+$("videoModal").addEventListener(
+  "click",
+  function (event) {
+
+    if (event.target === this) {
+
+      closeAnime();
+
+    }
+
+  }
+);
+
+
+$("adminModal").addEventListener(
+  "click",
+  function (event) {
+
+    if (event.target === this) {
+
+      closeAdmin();
+
+    }
+
+  }
+);
+
+
+/* ================= START ================= */
 
 updateWatchlist();
