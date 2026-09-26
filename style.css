@@ -9,7 +9,7 @@ html {
 body {
   margin: 0;
   background: #020711;
-  color: #fff;
+  color: white;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -24,7 +24,7 @@ button {
 }
 
 
-/* ================= HEADER ================= */
+/* HEADER */
 
 .header {
   height: 72px;
@@ -32,9 +32,9 @@ button {
 
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 30px;
 
-  background: rgba(2, 7, 17, .96);
+  background: rgba(2, 7, 17, .97);
 
   border-bottom: 1px solid #10263f;
 
@@ -45,15 +45,13 @@ button {
 }
 
 .logo {
-  color: #fff;
-
+  color: white;
   text-decoration: none;
 
   font-size: 23px;
   font-weight: 900;
 
   letter-spacing: 1px;
-
   white-space: nowrap;
 }
 
@@ -64,34 +62,26 @@ button {
 nav {
   display: flex;
   gap: 22px;
-
   flex: 1;
 }
 
 nav a {
   color: #8799ae;
-
   text-decoration: none;
-
   font-size: 14px;
-
-  transition: .2s;
 }
 
 nav a:hover {
-  color: #fff;
+  color: white;
 }
 
 .header-right {
   display: flex;
   align-items: center;
-
   gap: 10px;
 }
 
 .coins {
-  color: #fff;
-
   white-space: nowrap;
 }
 
@@ -102,19 +92,13 @@ nav a:hover {
   border-radius: 9px;
 
   background: #09182a;
-
-  color: #fff;
+  color: white;
 
   border: 1px solid #1b4268;
 }
 
-.login-btn:hover,
-.admin-btn:hover {
-  border-color: #168cff;
-}
 
-
-/* ================= HERO ================= */
+/* HERO */
 
 .hero {
   min-height: 620px;
@@ -131,17 +115,16 @@ nav a:hover {
   border-bottom: 1px solid #10243b;
 }
 
-.hero-background {
+.hero-bg {
   position: absolute;
-
   inset: 0;
 
   background:
     linear-gradient(
       90deg,
       #020711 5%,
-      #020711dd 40%,
-      #02071188 70%,
+      #020711dd 42%,
+      #02071188 72%,
       #020711ee 100%
     ),
     linear-gradient(
@@ -150,19 +133,16 @@ nav a:hover {
       transparent 50%,
       #020711 100%
     ),
-    url("slime-s4.webp");
+    url("slime-s4.jpg");
 
   background-size: cover;
   background-position: center 25%;
-
-  filter: saturate(1.15);
 
   z-index: 0;
 }
 
 .hero-content {
   position: relative;
-
   z-index: 2;
 
   max-width: 800px;
@@ -173,7 +153,6 @@ nav a:hover {
   color: #42afff;
 
   font-size: 12px;
-
   font-weight: 800;
 
   letter-spacing: 1.5px;
@@ -205,7 +184,6 @@ nav a:hover {
 
 .meta {
   display: flex;
-
   gap: 10px;
 
   margin: 18px 0;
@@ -213,6 +191,8 @@ nav a:hover {
   color: #b8c6d6;
 
   font-size: 14px;
+
+  flex-wrap: wrap;
 }
 
 .meta span:first-child {
@@ -221,7 +201,6 @@ nav a:hover {
 
 .hero-buttons {
   display: flex;
-
   gap: 12px;
 
   margin-top: 25px;
@@ -230,48 +209,38 @@ nav a:hover {
 }
 
 
-/* ================= BUTTONS ================= */
+/* BUTTONS */
 
 .primary-btn {
   border: none;
 
   background: #168cff;
-
-  color: #fff;
+  color: white;
 
   padding: 13px 22px;
 
   border-radius: 9px;
 
   font-weight: 700;
-
-  transition: .2s;
 }
 
 .primary-btn:hover {
   background: #0879e8;
-
-  transform: translateY(-1px);
 }
 
 .secondary-btn {
   border: 1px solid #214563;
 
   background: #071525;
-
-  color: #fff;
+  color: white;
 
   padding: 13px 22px;
 
   border-radius: 9px;
 }
 
-.secondary-btn:hover {
-  border-color: #168cff;
-}
 
-
-/* ================= SEARCH ================= */
+/* SEARCH */
 
 .search-section {
   max-width: 1150px;
@@ -294,7 +263,7 @@ nav a:hover {
 
   background: #071322;
 
-  color: #fff;
+  color: white;
 
   font-size: 16px;
 }
@@ -304,7 +273,7 @@ nav a:hover {
 }
 
 
-/* ================= SECTION ================= */
+/* SECTION */
 
 .section {
   max-width: 1200px;
@@ -332,12 +301,10 @@ nav a:hover {
 
 .view-all {
   color: #168cff;
-
-  font-size: 13px;
 }
 
 
-/* ================= GRID ================= */
+/* CARDS */
 
 .anime-grid {
   display: grid;
@@ -346,9 +313,6 @@ nav a:hover {
 
   gap: 16px;
 }
-
-
-/* ================= CARD ================= */
 
 .anime-card {
   overflow: hidden;
@@ -369,7 +333,8 @@ nav a:hover {
 
   border-color: #168cff;
 
-  box-shadow: 0 12px 35px rgba(0, 105, 255, .16);
+  box-shadow:
+    0 12px 35px rgba(0, 105, 255, .16);
 }
 
 .poster {
@@ -384,14 +349,11 @@ nav a:hover {
 
 .poster img {
   width: 100%;
-
   height: 100%;
 
   display: block;
 
   object-fit: cover;
-
-  object-position: center;
 }
 
 .poster-overlay {
@@ -402,14 +364,9 @@ nav a:hover {
   display: flex;
 
   align-items: center;
-
   justify-content: center;
 
   background: rgba(0, 0, 0, .55);
-
-  color: #fff;
-
-  font-weight: 800;
 
   opacity: 0;
 
@@ -431,8 +388,6 @@ nav a:hover {
   border-radius: 6px;
 
   background: #168cff;
-
-  color: #fff;
 
   font-size: 11px;
 
@@ -464,15 +419,11 @@ nav a:hover {
 
   justify-content: space-between;
 
-  align-items: center;
-
   margin-top: 11px;
 }
 
 .rating {
   color: #ffd166;
-
-  font-size: 13px;
 }
 
 .hd {
@@ -488,7 +439,7 @@ nav a:hover {
 }
 
 
-/* ================= GENRES ================= */
+/* GENRES */
 
 .genres {
   display: flex;
@@ -510,14 +461,8 @@ nav a:hover {
   color: #aebed0;
 }
 
-.genres button:hover {
-  color: #fff;
 
-  border-color: #168cff;
-}
-
-
-/* ================= WATCHLIST ================= */
+/* WATCHLIST */
 
 .watchlist-empty {
   padding: 35px;
@@ -534,7 +479,7 @@ nav a:hover {
 }
 
 
-/* ================= PREMIUM ================= */
+/* PREMIUM */
 
 .premium-box {
   padding: 35px;
@@ -542,7 +487,6 @@ nav a:hover {
   display: flex;
 
   justify-content: space-between;
-
   align-items: center;
 
   gap: 25px;
@@ -562,8 +506,6 @@ nav a:hover {
 
 .premium-icon {
   font-size: 30px;
-
-  margin-bottom: 8px;
 }
 
 .premium-box h2 {
@@ -582,7 +524,6 @@ nav a:hover {
 
 .premium-plans {
   display: flex;
-
   gap: 10px;
 }
 
@@ -609,7 +550,7 @@ nav a:hover {
 }
 
 
-/* ================= MODAL ================= */
+/* MODALS */
 
 .modal {
   position: fixed;
@@ -623,7 +564,6 @@ nav a:hover {
   display: flex;
 
   justify-content: center;
-
   align-items: center;
 
   background: rgba(0, 0, 0, .9);
@@ -656,11 +596,9 @@ nav a:hover {
   position: absolute;
 
   right: 14px;
-
   top: 12px;
 
   width: 40px;
-
   height: 40px;
 
   border-radius: 50%;
@@ -669,27 +607,21 @@ nav a:hover {
 
   background: #0b1c2e;
 
-  color: #fff;
+  color: white;
 
   font-size: 27px;
 }
 
-.close-btn:hover {
-  background: #168cff;
-}
-
 .video-box h2 {
   margin: 8px 45px 5px 0;
-
-  font-size: 24px;
 }
 
-.video-header p {
+.episode-text {
   color: #75889d;
 }
 
 
-/* ================= VIDEO ================= */
+/* VIDEO */
 
 .video-player {
   width: 100%;
@@ -708,7 +640,7 @@ nav a:hover {
 }
 
 
-/* ================= PLAYER CONTROLS ================= */
+/* CONTROLS */
 
 .player-controls {
   display: grid;
@@ -730,7 +662,7 @@ nav a:hover {
 
   background: #0a1929;
 
-  color: #fff;
+  color: white;
 
   padding: 10px;
 }
@@ -740,15 +672,13 @@ nav a:hover {
 }
 
 
-/* ================= ADMIN ================= */
+/* ADMIN */
 
 .admin-box {
   max-width: 650px;
 }
 
 .admin-box h2 {
-  margin-top: 8px;
-
   font-size: 30px;
 }
 
@@ -774,14 +704,6 @@ nav a:hover {
   color: white;
 
   outline: none;
-}
-
-.admin-login input:focus {
-  border-color: #168cff;
-}
-
-.admin-dashboard {
-  margin-top: 25px;
 }
 
 .admin-cards {
@@ -838,12 +760,8 @@ nav a:hover {
   border: 1px solid #193d5d;
 }
 
-.admin-action:hover {
-  border-color: #168cff;
-}
 
-
-/* ================= FOOTER ================= */
+/* FOOTER */
 
 footer {
   margin-top: 90px;
@@ -859,16 +777,10 @@ footer {
 
 footer p {
   color: #62758b;
-
-  font-size: 13px;
-}
-
-.footer-note {
-  font-size: 11px;
 }
 
 
-/* ================= MOBILE ================= */
+/* MOBILE */
 
 @media (max-width: 950px) {
 
@@ -886,7 +798,6 @@ footer p {
 
   .header {
     padding: 0 14px;
-
     gap: 10px;
   }
 
@@ -904,29 +815,15 @@ footer p {
 
   .hero {
     min-height: 570px;
-
     padding: 55px 22px;
-  }
-
-  .hero-background {
-    background-position: 60% center;
   }
 
   .hero h1 {
     font-size: 42px;
   }
 
-  .hero p {
-    font-size: 15px;
-  }
-
-  .meta {
-    flex-wrap: wrap;
-  }
-
   .anime-grid {
     grid-template-columns: repeat(2, 1fr);
-
     gap: 11px;
   }
 
@@ -936,7 +833,6 @@ footer p {
 
   .premium-box {
     flex-direction: column;
-
     align-items: flex-start;
   }
 
