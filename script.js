@@ -1,317 +1,306 @@
-/* =========================================================
+/* =====================================================
    NOX ANIME
-   Complete frontend demo
-   ========================================================= */
+   Matching JavaScript
+===================================================== */
 
 
-/* ================= STORAGE ================= */
+/* =========================
+   HELPERS
+========================= */
 
-const ANIME_KEY = "nox_anime_data_v3";
-const USERS_KEY = "nox_users_v3";
-const CURRENT_USER_KEY = "nox_current_user_v3";
-const WATCH_KEY = "nox_watchlist_v3";
-const COINS_KEY = "nox_coins_v3";
-const DAILY_KEY = "nox_daily_v3";
-const PREMIUM_KEY = "nox_premium_v3";
+const $ = (id) => document.getElementById(id);
 
 
-/* ================= DEFAULT ANIME ================= */
+/* =========================
+   STORAGE
+========================= */
 
-const DEFAULT_ANIME = [
+const COINS_KEY = "nox_coins";
+const WATCH_KEY = "nox_watchlist";
+const PREMIUM_KEY = "nox_premium";
+const USERS_KEY = "nox_users";
+const DAILY_KEY = "nox_daily";
+const CURRENT_USER_KEY = "nox_current_user";
+const ANIME_KEY = "nox_anime";
+
+
+/* =========================
+   DEFAULT ANIME
+========================= */
+
+const defaultAnime = [
 
   {
-    id:1,
-    name:"That Time I Got Reincarnated as a Slime",
-    genre:"Fantasy",
-    year:"2024",
-    rating:"8.5",
-    season:"Season 4",
-    poster:"slime-s4.jpg",
-    video:"",
-    premium:false,
-    trending:true,
-    latest:true
+    id: 1,
+    name: "That Time I Got Reincarnated as a Slime",
+    genre: "Fantasy",
+    year: 2024,
+    season: "Season 4",
+    rating: "8.5",
+    poster: "slime-s4.jpg",
+    trending: true,
+    latest: true,
+    premium: false
   },
 
   {
-    id:2,
-    name:"Solo Leveling",
-    genre:"Action",
-    year:"2024",
-    rating:"9.1",
-    season:"Season 2",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:true,
-    latest:true
+    id: 2,
+    name: "Solo Leveling",
+    genre: "Action",
+    year: 2024,
+    season: "Season 2",
+    rating: "9.1",
+    poster: "slime-s4.jpg",
+    trending: true,
+    latest: true,
+    premium: true
   },
 
   {
-    id:3,
-    name:"One Piece",
-    genre:"Adventure",
-    year:"1999",
-    rating:"9.0",
-    season:"Ongoing",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:true,
-    latest:false
+    id: 3,
+    name: "One Piece",
+    genre: "Adventure",
+    year: 1999,
+    season: "Ongoing",
+    rating: "9.0",
+    poster: "slime-s4.jpg",
+    trending: true,
+    latest: false,
+    premium: false
   },
 
   {
-    id:4,
-    name:"Jujutsu Kaisen",
-    genre:"Action",
-    year:"2020",
-    rating:"8.8",
-    season:"Season 2",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:true,
-    latest:true
+    id: 4,
+    name: "Jujutsu Kaisen",
+    genre: "Action",
+    year: 2020,
+    season: "Season 2",
+    rating: "8.8",
+    poster: "slime-s4.jpg",
+    trending: true,
+    latest: true,
+    premium: false
   },
 
   {
-    id:5,
-    name:"Demon Slayer",
-    genre:"Fantasy",
-    year:"2019",
-    rating:"8.6",
-    season:"TV",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:true,
-    latest:false
+    id: 5,
+    name: "Demon Slayer",
+    genre: "Fantasy",
+    year: 2019,
+    season: "Season 4",
+    rating: "8.6",
+    poster: "slime-s4.jpg",
+    trending: true,
+    latest: true,
+    premium: false
   },
 
   {
-    id:6,
-    name:"Attack on Titan",
-    genre:"Dark",
-    year:"2013",
-    rating:"9.0",
-    season:"Final Season",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:true,
-    latest:false
+    id: 6,
+    name: "Attack on Titan",
+    genre: "Dark",
+    year: 2013,
+    season: "Final Season",
+    rating: "9.0",
+    poster: "slime-s4.jpg",
+    trending: true,
+    latest: false,
+    premium: false
   },
 
   {
-    id:7,
-    name:"Naruto",
-    genre:"Adventure",
-    year:"2002",
-    rating:"8.4",
-    season:"TV",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:false,
-    latest:true
+    id: 7,
+    name: "Naruto",
+    genre: "Adventure",
+    year: 2002,
+    season: "Complete",
+    rating: "8.4",
+    poster: "slime-s4.jpg",
+    trending: false,
+    latest: true,
+    premium: false
   },
 
   {
-    id:8,
-    name:"Bleach",
-    genre:"Action",
-    year:"2004",
-    rating:"8.2",
-    season:"TV",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:false,
-    latest:false
+    id: 8,
+    name: "Bleach",
+    genre: "Action",
+    year: 2004,
+    season: "TYBW",
+    rating: "8.2",
+    poster: "slime-s4.jpg",
+    trending: false,
+    latest: true,
+    premium: false
   },
 
   {
-    id:9,
-    name:"Dragon Ball Super",
-    genre:"Action",
-    year:"2015",
-    rating:"8.0",
-    season:"TV",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:false,
-    latest:true
+    id: 9,
+    name: "Dragon Ball Super",
+    genre: "Action",
+    year: 2015,
+    season: "Complete",
+    rating: "8.0",
+    poster: "slime-s4.jpg",
+    trending: false,
+    latest: true,
+    premium: false
   },
 
   {
-    id:10,
-    name:"My Hero Academia",
-    genre:"Superhero",
-    year:"2016",
-    rating:"8.0",
-    season:"TV",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:false,
-    latest:false
+    id: 10,
+    name: "My Hero Academia",
+    genre: "Superhero",
+    year: 2016,
+    season: "Season 7",
+    rating: "8.0",
+    poster: "slime-s4.jpg",
+    trending: false,
+    latest: true,
+    premium: false
   },
 
   {
-    id:11,
-    name:"Black Clover",
-    genre:"Fantasy",
-    year:"2017",
-    rating:"8.2",
-    season:"TV",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:false,
-    latest:true
+    id: 11,
+    name: "Black Clover",
+    genre: "Fantasy",
+    year: 2017,
+    season: "Complete",
+    rating: "8.2",
+    poster: "slime-s4.jpg",
+    trending: false,
+    latest: true,
+    premium: false
   },
 
   {
-    id:12,
-    name:"Chainsaw Man",
-    genre:"Action",
-    year:"2022",
-    rating:"8.5",
-    season:"TV",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:true,
-    latest:false
+    id: 12,
+    name: "Chainsaw Man",
+    genre: "Action",
+    year: 2022,
+    season: "Season 1",
+    rating: "8.5",
+    poster: "slime-s4.jpg",
+    trending: true,
+    latest: false,
+    premium: true
   },
 
   {
-    id:13,
-    name:"Spy x Family",
-    genre:"Comedy",
-    year:"2022",
-    rating:"8.5",
-    season:"TV",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:false,
-    latest:true
+    id: 13,
+    name: "Spy x Family",
+    genre: "Comedy",
+    year: 2022,
+    season: "Season 2",
+    rating: "8.5",
+    poster: "slime-s4.jpg",
+    trending: false,
+    latest: true,
+    premium: false
   },
 
   {
-    id:14,
-    name:"Haikyuu!!",
-    genre:"Sports",
-    year:"2014",
-    rating:"8.7",
-    season:"TV",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:false,
-    latest:false
+    id: 14,
+    name: "Haikyuu!!",
+    genre: "Sports",
+    year: 2014,
+    season: "Complete",
+    rating: "8.7",
+    poster: "slime-s4.jpg",
+    trending: true,
+    latest: false,
+    premium: false
   },
 
   {
-    id:15,
-    name:"Blue Lock",
-    genre:"Sports",
-    year:"2022",
-    rating:"8.3",
-    season:"TV",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:false,
-    latest:true
+    id: 15,
+    name: "Blue Lock",
+    genre: "Sports",
+    year: 2022,
+    season: "Season 2",
+    rating: "8.3",
+    poster: "slime-s4.jpg",
+    trending: false,
+    latest: true,
+    premium: false
   },
 
   {
-    id:16,
-    name:"Death Note",
-    genre:"Mystery",
-    year:"2006",
-    rating:"8.9",
-    season:"TV",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:true,
-    latest:false
+    id: 16,
+    name: "Death Note",
+    genre: "Mystery",
+    year: 2006,
+    season: "Complete",
+    rating: "8.9",
+    poster: "slime-s4.jpg",
+    trending: true,
+    latest: false,
+    premium: false
   },
 
   {
-    id:17,
-    name:"Tokyo Ghoul",
-    genre:"Dark",
-    year:"2014",
-    rating:"7.7",
-    season:"TV",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:false,
-    latest:false
+    id: 17,
+    name: "Tokyo Ghoul",
+    genre: "Dark",
+    year: 2014,
+    season: "Complete",
+    rating: "7.7",
+    poster: "slime-s4.jpg",
+    trending: false,
+    latest: false,
+    premium: false
   },
 
   {
-    id:18,
-    name:"Frieren",
-    genre:"Fantasy",
-    year:"2023",
-    rating:"9.0",
-    season:"TV",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:true,
-    latest:true
+    id: 18,
+    name: "Frieren",
+    genre: "Fantasy",
+    year: 2023,
+    season: "Season 1",
+    rating: "9.0",
+    poster: "slime-s4.jpg",
+    trending: true,
+    latest: true,
+    premium: false
   },
 
   {
-    id:19,
-    name:"Hunter x Hunter",
-    genre:"Adventure",
-    year:"2011",
-    rating:"9.0",
-    season:"TV",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:false,
-    latest:false
+    id: 19,
+    name: "Hunter x Hunter",
+    genre: "Adventure",
+    year: 2011,
+    season: "Complete",
+    rating: "9.0",
+    poster: "slime-s4.jpg",
+    trending: true,
+    latest: false,
+    premium: false
   },
 
   {
-    id:20,
-    name:"Vinland Saga",
-    genre:"Historical",
-    year:"2019",
-    rating:"8.8",
-    season:"TV",
-    poster:"",
-    video:"",
-    premium:false,
-    trending:false,
-    latest:true
+    id: 20,
+    name: "Vinland Saga",
+    genre: "Historical",
+    year: 2019,
+    season: "Season 2",
+    rating: "8.8",
+    poster: "slime-s4.jpg",
+    trending: true,
+    latest: true,
+    premium: true
   }
 
 ];
 
 
-/* ================= DATA ================= */
+/* =========================
+   DATA
+========================= */
 
-let animeList = loadAnime();
-
-let users = loadUsers();
-
-let currentUser = localStorage.getItem(CURRENT_USER_KEY) || "";
+let anime = loadAnime();
 
 let coins = Number(
-  localStorage.getItem(COINS_KEY) || "10"
+  localStorage.getItem(COINS_KEY) || 10
 );
 
 let watchlist = JSON.parse(
@@ -319,110 +308,52 @@ let watchlist = JSON.parse(
 );
 
 let premiumUntil = Number(
-  localStorage.getItem(PREMIUM_KEY) || "0"
+  localStorage.getItem(PREMIUM_KEY) || 0
+);
+
+let users = JSON.parse(
+  localStorage.getItem(USERS_KEY) || "[]"
 );
 
 
-/* ================= HELPERS ================= */
+/* =========================
+   DEFAULT USERS
+========================= */
 
-function $(id){
-  return document.getElementById(id);
-}
+if (!users.length) {
 
-
-function saveAnimeData(){
-  localStorage.setItem(
-    ANIME_KEY,
-    JSON.stringify(animeList)
-  );
-}
-
-
-function loadAnime(){
-
-  try{
-
-    const saved = JSON.parse(
-      localStorage.getItem(ANIME_KEY)
-    );
-
-    if(Array.isArray(saved) && saved.length){
-      return saved;
-    }
-
-  }catch(e){}
-
-  localStorage.setItem(
-    ANIME_KEY,
-    JSON.stringify(DEFAULT_ANIME)
-  );
-
-  return [...DEFAULT_ANIME];
-}
-
-
-function loadUsers(){
-
-  try{
-
-    const saved = JSON.parse(
-      localStorage.getItem(USERS_KEY)
-    );
-
-    if(Array.isArray(saved) && saved.length){
-      return saved;
-    }
-
-  }catch(e){}
-
-  const defaultUsers = [
-
+  users = [
     {
-      id:1,
-      username:"superadmin",
-      password:"ANIMEADMIN",
-      role:"super"
+      username: "superadmin",
+      password: "ANIMEADMIN",
+      role: "super"
     },
 
     {
-      id:2,
-      username:"admin",
-      password:"ADMIN123",
-      role:"admin"
+      username: "admin",
+      password: "ADMIN123",
+      role: "admin"
     }
-
   ];
 
-  localStorage.setItem(
-    USERS_KEY,
-    JSON.stringify(defaultUsers)
-  );
-
-  return defaultUsers;
+  saveUsers();
 }
 
 
-function saveUsers(){
+/* =========================
+   SAVE FUNCTIONS
+========================= */
 
-  localStorage.setItem(
-    USERS_KEY,
-    JSON.stringify(users)
-  );
-
-}
-
-
-function saveCoins(){
+function saveCoins() {
 
   localStorage.setItem(
     COINS_KEY,
-    String(coins)
+    coins
   );
 
 }
 
-
-function saveWatchlist(){
+function saveWatchlist() {
 
   localStorage.setItem(
     WATCH_KEY,
@@ -431,8 +362,355 @@ function saveWatchlist(){
 
 }
 
+function savePremium() {
 
-function isPremium(){
+  localStorage.setItem(
+    PREMIUM_KEY,
+    premiumUntil
+  );
+
+}
+
+function saveUsers() {
+
+  localStorage.setItem(
+    USERS_KEY,
+    JSON.stringify(users)
+  );
+
+}
+
+function saveAnime() {
+
+  localStorage.setItem(
+    ANIME_KEY,
+    JSON.stringify(anime)
+  );
+
+}
+
+
+/* =========================
+   LOAD ANIME
+========================= */
+
+function loadAnime() {
+
+  try {
+
+    const saved =
+      localStorage.getItem(ANIME_KEY);
+
+    if (saved) {
+
+      const data = JSON.parse(saved);
+
+      if (Array.isArray(data) && data.length) {
+        return data;
+      }
+
+    }
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+
+  return defaultAnime;
+
+}
+
+
+/* =========================
+   RENDER
+========================= */
+
+function render() {
+
+  const query =
+    ($("search")?.value || "")
+      .trim()
+      .toLowerCase();
+
+  let filtered = anime.filter(item => {
+
+    return (
+      item.name.toLowerCase().includes(query) ||
+      item.genre.toLowerCase().includes(query)
+    );
+
+  });
+
+  renderGrid(
+    $("trendingGrid"),
+    filtered.filter(a => a.trending)
+  );
+
+  renderGrid(
+    $("latestGrid"),
+    filtered.filter(a => a.latest)
+  );
+
+  renderWatchlist();
+
+  renderGenres();
+
+  updateCoins();
+
+  updatePremium();
+
+}
+
+
+/* =========================
+   GRID
+========================= */
+
+function renderGrid(container, list) {
+
+  if (!container) return;
+
+  if (!list.length) {
+
+    container.innerHTML = `
+      <div style="
+        grid-column:1/-1;
+        padding:30px;
+        color:#71839a;
+        text-align:center;
+      ">
+        No anime found.
+      </div>
+    `;
+
+    return;
+  }
+
+
+  container.innerHTML = list.map(item => {
+
+    return `
+
+      <article
+        class="anime-card"
+        onclick="openAnime(${item.id})">
+
+        <img
+          class="poster"
+          src="${item.poster || "slime-s4.jpg"}"
+          alt="${escapeHTML(item.name)}"
+          onerror="this.src='slime-s4.jpg'"
+        >
+
+        <div class="card-info">
+
+          <h3>
+            ${escapeHTML(item.name)}
+          </h3>
+
+          <div class="card-meta">
+
+            ⭐ <span class="rating">
+              ${item.rating}
+            </span>
+
+            • ${escapeHTML(item.genre)}
+            • ${item.year}
+
+          </div>
+
+        </div>
+
+      </article>
+
+    `;
+
+  }).join("");
+
+}
+
+
+/* =========================
+   WATCHLIST
+========================= */
+
+function renderWatchlist() {
+
+  const grid = $("watchGrid");
+
+  if (!grid) return;
+
+  const list = anime.filter(
+    item => watchlist.includes(item.id)
+  );
+
+  if (!list.length) {
+
+    grid.innerHTML = `
+      <div style="
+        grid-column:1/-1;
+        padding:25px;
+        color:#71839a;
+      ">
+        Your watchlist is empty.
+      </div>
+    `;
+
+    return;
+  }
+
+  renderGrid(grid, list);
+
+}
+
+
+function toggleWatchlist(id) {
+
+  if (watchlist.includes(id)) {
+
+    watchlist =
+      watchlist.filter(
+        item => item !== id
+      );
+
+  } else {
+
+    watchlist.push(id);
+
+  }
+
+  saveWatchlist();
+
+  render();
+
+}
+
+
+/* =========================
+   GENRES
+========================= */
+
+function renderGenres() {
+
+  const box = $("genresGrid");
+
+  if (!box) return;
+
+  const genres = [
+    ...new Set(
+      anime.map(item => item.genre)
+    )
+  ];
+
+  box.innerHTML =
+    genres.map(genre => {
+
+      return `
+        <button
+          class="genre-btn"
+          onclick="filterGenre('${escapeAttribute(genre)}')">
+          ${escapeHTML(genre)}
+        </button>
+      `;
+
+    }).join("");
+
+}
+
+
+function filterGenre(genre) {
+
+  const results =
+    anime.filter(
+      item => item.genre === genre
+    );
+
+  $("trendingGrid").innerHTML = "";
+
+  renderGrid(
+    $("trendingGrid"),
+    results
+  );
+
+  document
+    .getElementById("trending")
+    .scrollIntoView({
+      behavior: "smooth"
+    });
+
+}
+
+
+/* =========================
+   SHOW ALL
+========================= */
+
+function showAll() {
+
+  renderGrid(
+    $("trendingGrid"),
+    anime
+  );
+
+}
+
+
+/* =========================
+   COINS
+========================= */
+
+function updateCoins() {
+
+  if ($("coins")) {
+    $("coins").textContent = coins;
+  }
+
+  saveCoins();
+
+}
+
+
+function claimDaily() {
+
+  const today =
+    new Date().toISOString().slice(0,10);
+
+  const last =
+    localStorage.getItem(DAILY_KEY);
+
+  if (last === today) {
+
+    alert(
+      "Daily coins already claimed today."
+    );
+
+    return;
+  }
+
+  coins += 10;
+
+  localStorage.setItem(
+    DAILY_KEY,
+    today
+  );
+
+  saveCoins();
+
+  updateCoins();
+
+  alert(
+    "🎉 You received 10 free coins!"
+  );
+
+}
+
+
+/* =========================
+   PREMIUM
+========================= */
+
+function isPremium() {
 
   return (
     premiumUntil &&
@@ -442,417 +720,149 @@ function isPremium(){
 }
 
 
-function isSuperAdmin(){
+function updatePremium() {
 
-  const user = users.find(
-    u => u.username === currentUser
-  );
+  const status =
+    $("premiumStatus");
 
-  return user && user.role === "super";
+  if (!status) return;
 
-}
+  if (isPremium()) {
 
+    const days =
+      Math.ceil(
+        (premiumUntil - Date.now()) /
+        86400000
+      );
 
-function isAdmin(){
+    status.innerHTML =
+      `👑 Premium active — ${days} day(s) remaining.`;
 
-  const user = users.find(
-    u => u.username === currentUser
-  );
+  } else {
 
-  return (
-    user &&
-    (user.role === "admin" || user.role === "super")
-  );
-
-}
-
-
-/* ================= INIT ================= */
-
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
-
-    setTimeout(() => {
-
-      $("loader").style.display = "none";
-
-    },700);
-
-
-    renderAnime();
-
-    updateCoins();
-
-    updatePremium();
-
-    updateLoginUI();
-
-    renderGenres();
+    status.innerHTML =
+      "Free account";
 
   }
-);
-
-
-/* ================= RENDER ================= */
-
-function renderAnime(){
-
-  const query = (
-    $("search")?.value || ""
-  ).toLowerCase().trim();
-
-
-  let filtered = animeList.filter(
-    anime =>
-      anime.name
-        .toLowerCase()
-        .includes(query)
-  );
-
-
-  renderGrid(
-    $("trendingGrid"),
-    filtered.filter(a => a.trending)
-  );
-
-
-  renderGrid(
-    $("latestGrid"),
-    filtered.filter(a => a.latest)
-  );
-
-
-  const watched = filtered.filter(
-    a => watchlist.includes(a.id)
-  );
-
-
-  renderGrid(
-    $("watchGrid"),
-    watched
-  );
 
 }
 
 
-function renderGrid(container, list){
+function redeemPremium(cost, days) {
 
-  if(!container) return;
-
-
-  if(!list.length){
-
-    container.innerHTML =
-      `<div class="empty">
-        No anime found.
-      </div>`;
-
-    return;
-  }
-
-
-  container.innerHTML =
-    list.map(
-      animeCard
-    ).join("");
-
-}
-
-
-function animeCard(anime){
-
-  const poster = anime.poster
-    ? anime.poster
-    : "";
-
-
-  return `
-
-    <div class="anime-card">
-
-      <div
-        class="poster-wrap"
-        onclick="openAnime(${anime.id})"
-      >
-
-        ${
-          poster
-
-          ?
-
-          `<img
-            class="poster"
-            src="${escapeHTML(poster)}"
-            alt="${escapeHTML(anime.name)}"
-            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
-          >`
-
-          :
-
-          ""
-        }
-
-
-        <div
-          class="poster-fallback"
-          style="display:${poster ? "none" : "flex"}"
-        >
-          ${escapeHTML(anime.name)}
-        </div>
-
-
-        ${
-          anime.premium
-
-          ?
-
-          `<div class="premium-tag">
-            👑 PREMIUM
-          </div>`
-
-          :
-
-          ""
-        }
-
-      </div>
-
-
-      <div class="card-info">
-
-        <h3>
-          ${escapeHTML(anime.name)}
-        </h3>
-
-        <div class="card-meta">
-          ⭐ ${escapeHTML(anime.rating)}
-          •
-          ${escapeHTML(anime.year)}
-        </div>
-
-
-        <div class="card-buttons">
-
-          <button
-            onclick="openAnime(${anime.id})"
-          >
-            ▶ Watch
-          </button>
-
-          <button
-            onclick="toggleWatchlist(${anime.id})"
-          >
-            ${
-              watchlist.includes(anime.id)
-              ? "✓ Saved"
-              : "＋ Save"
-            }
-          </button>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  `;
-
-}
-
-
-/* ================= GENRES ================= */
-
-function renderGenres(){
-
-  const container = $("genresGrid");
-
-  if(!container) return;
-
-
-  const genres = [
-    ...new Set(
-      animeList.map(
-        anime => anime.genre
-      )
-    )
-  ];
-
-
-  container.innerHTML =
-    genres.map(
-      genre => `
-
-        <button
-          class="genre-btn"
-          onclick="filterGenre('${escapeJS(genre)}')"
-        >
-          ${escapeHTML(genre)}
-        </button>
-
-      `
-    ).join("");
-
-}
-
-
-function filterGenre(genre){
-
-  const search = $("search");
-
-  if(search){
-
-    search.value = genre;
-
-    renderAnime();
-
-  }
-
-  scrollToSection("trending");
-
-}
-
-
-function showAllAnime(){
-
-  if($("search")){
-    $("search").value = "";
-  }
-
-  renderAnime();
-
-  scrollToSection("trending");
-
-}
-
-
-/* ================= WATCHLIST ================= */
-
-function toggleWatchlist(id){
-
-  const index =
-    watchlist.indexOf(id);
-
-
-  if(index === -1){
-
-    watchlist.push(id);
-
-  }else{
-
-    watchlist.splice(index,1);
-
-  }
-
-
-  saveWatchlist();
-
-  renderAnime();
-
-}
-
-
-/* ================= OPEN ANIME ================= */
-
-function openAnime(id){
-
-  const anime =
-    animeList.find(
-      a => a.id === id
-    );
-
-
-  if(!anime) return;
-
-
-  if(
-    anime.premium &&
-    !isPremium()
-  ){
+  if (coins < cost) {
 
     alert(
-      "👑 Premium required for this anime."
+      `You need ${cost} coins. You currently have ${coins}.`
     );
 
-    scrollToSection("premium");
+    return;
+
+  }
+
+  coins -= cost;
+
+  const base =
+    isPremium()
+      ? premiumUntil
+      : Date.now();
+
+  premiumUntil =
+    base + days * 86400000;
+
+  saveCoins();
+  savePremium();
+
+  updateCoins();
+  updatePremium();
+
+  alert(
+    `👑 Premium activated for ${days} days!`
+  );
+
+}
+
+
+/* =========================
+   OPEN ANIME
+========================= */
+
+function openAnime(id) {
+
+  const item =
+    anime.find(
+      animeItem => animeItem.id === id
+    );
+
+  if (!item) return;
+
+
+  if (item.premium && !isPremium()) {
+
+    alert(
+      "👑 This anime requires NOX Premium."
+    );
+
+    document
+      .getElementById("premium")
+      .scrollIntoView({
+        behavior: "smooth"
+      });
 
     return;
 
   }
 
 
-  const videoURL =
-    anime.video ||
-    "";
+  $("modalBody").innerHTML = `
 
+    <h2 class="modal-title">
+      ${escapeHTML(item.name)}
+    </h2>
 
-  $("animeDetails").innerHTML = `
-
-    <div class="player-title">
-      ${escapeHTML(anime.name)}
-    </div>
-
-    <div class="player-meta">
-      ⭐ ${escapeHTML(anime.rating)}
+    <p style="color:#8092a8">
+      ${escapeHTML(item.genre)}
       •
-      ${escapeHTML(anime.season)}
+      ${item.year}
       •
-      ${escapeHTML(anime.genre)}
+      ${escapeHTML(item.season)}
+    </p>
+
+    <video
+      id="player"
+      class="real-player"
+      controls
+      playsinline
+      preload="metadata">
+
+      <source
+        id="videoSource"
+        src=""
+        type="video/mp4">
+
+      Your browser does not support HTML5 video.
+
+    </video>
+
+    <div
+      style="
+        margin-top:12px;
+        padding:12px;
+        border-radius:10px;
+        background:#09192b;
+        color:#8296ad;
+        font-size:13px;
+      ">
+
+      🎬 Add your authorized MP4 video URL
+      in <b>VIDEO_URLS</b> inside script.js.
+
     </div>
-
-
-    ${
-      videoURL
-
-      ?
-
-      `
-
-      <video
-        id="videoPlayer"
-        class="real-player"
-        controls
-        playsinline
-        preload="metadata"
-      >
-
-        <source
-          src="${escapeHTML(videoURL)}"
-          type="video/mp4"
-        >
-
-        Your browser does not support HTML5 video.
-
-      </video>
-
-      `
-
-      :
-
-      `
-
-      <div class="empty" style="margin-top:20px">
-
-        <h3>🎬 Video not connected</h3>
-
-        <p>
-          Add an authorized MP4 video URL from the
-          Admin Panel.
-        </p>
-
-      </div>
-
-      `
-
-    }
-
 
     <div class="player-controls">
 
-      <select
-        class="player-select"
-        onchange="changeQuality(this.value)"
-      >
+      <select id="qualitySelect"
+        onchange="changeQuality(this.value)">
 
         <option value="auto">
           Auto Quality
@@ -877,142 +887,214 @@ function openAnime(id){
       </select>
 
 
-      <select
-        class="player-select"
-        onchange="changeAudio(this.value)"
-      >
+      <select id="audioSelect"
+        onchange="changeAudio(this.value)">
 
         <option>
           Japanese / Original
         </option>
 
-        <option>Hindi</option>
-        <option>English</option>
-        <option>Urdu</option>
-        <option>Spanish</option>
-        <option>French</option>
-        <option>German</option>
-        <option>Korean</option>
+        <option>
+          Hindi
+        </option>
+
+        <option>
+          English
+        </option>
+
+        <option>
+          Urdu
+        </option>
+
+        <option>
+          Spanish
+        </option>
+
+        <option>
+          French
+        </option>
+
+        <option>
+          German
+        </option>
+
+        <option>
+          Korean
+        </option>
 
       </select>
 
     </div>
 
 
-    <div class="player-actions">
+    <div class="modal-actions">
 
       <button
-        class="secondary-btn"
-        onclick="toggleWatchlist(${anime.id})"
-      >
-        ${
-          watchlist.includes(anime.id)
-          ? "✓ In Watchlist"
-          : "＋ Watchlist"
-        }
+        onclick="toggleWatchlist(${item.id})">
+
+        ❤️ Watchlist
+
       </button>
 
 
-      ${
-        videoURL
+      <button
+        class="blue"
+        onclick="downloadAnime(${item.id})">
 
-        ?
+        ⬇ Download
 
-        `<button
-          class="primary-btn"
-          onclick="downloadAnime(${anime.id})"
-        >
-          ⬇ Download
-        </button>`
-
-        :
-
-        ""
-
-      }
+      </button>
 
     </div>
 
   `;
 
 
-  $("animeModal").classList.remove(
-    "hidden"
-  );
+  $("modal").classList.remove("hidden");
 
 }
 
 
-function closeModal(id){
+/* =========================
+   VIDEO URLS
+========================= */
 
-  const modal = $(id);
+/*
+  Yahan sirf apni authorized video URLs lagani hain.
 
-  if(modal){
+  Example:
 
-    modal.classList.add(
-      "hidden"
-    );
-
+  1: {
+    auto: "https://example.com/slime.mp4"
   }
 
-}
+*/
 
+const VIDEO_URLS = {
 
-/* ================= VIDEO ================= */
-
-function changeQuality(value){
-
-  if(value === "auto"){
-    return;
+  1: {
+    auto: "",
+    "720p": "",
+    "1080p": "",
+    "1440p": "",
+    "4k": ""
   }
 
-  alert(
-    "Quality selected: " +
-    value +
-    "\n\nActual quality switching requires separate authorized video streams or an HLS/DASH stream."
-  );
-
-}
+};
 
 
-function changeAudio(value){
+/* =========================
+   QUALITY
+========================= */
 
-  alert(
-    "Audio selected: " +
-    value +
-    "\n\nActual audio switching requires separate authorized audio/video tracks or an HLS/DASH stream."
-  );
+function changeQuality(quality) {
 
-}
+  const item =
+    getCurrentAnimeFromModal();
 
+  if (!item) return;
 
-function downloadAnime(id){
+  const urls =
+    VIDEO_URLS[item.id];
 
-  const anime =
-    animeList.find(
-      a => a.id === id
-    );
-
-
-  if(!anime || !anime.video){
+  if (!urls) {
 
     alert(
-      "No authorized download video has been added yet."
+      "No authorized video URL has been added yet."
     );
 
     return;
   }
 
+  const url =
+    urls[quality] || urls.auto;
+
+  if (!url) {
+
+    alert(
+      `No ${quality} video URL is configured.`
+    );
+
+    return;
+  }
+
+  const player = $("player");
+
+  if (!player) return;
+
+  const currentTime =
+    player.currentTime || 0;
+
+  player.src = url;
+
+  player.currentTime =
+    currentTime;
+
+  player.play().catch(() => {});
+
+}
+
+
+function getCurrentAnimeFromModal() {
+
+  const title =
+    document.querySelector(
+      ".modal-title"
+    )?.textContent;
+
+  if (!title) return null;
+
+  return anime.find(
+    item =>
+      item.name.trim() ===
+      title.trim()
+  );
+
+}
+
+
+/* =========================
+   AUDIO
+========================= */
+
+function changeAudio(language) {
+
+  alert(
+    `${language} audio selected. Real audio switching requires an authorized multi-audio stream or separate authorized audio/video source.`
+  );
+
+}
+
+
+/* =========================
+   DOWNLOAD
+========================= */
+
+function downloadAnime(id) {
+
+  const urls =
+    VIDEO_URLS[id];
+
+  if (!urls || !urls.auto) {
+
+    alert(
+      "No authorized downloadable video URL has been configured."
+    );
+
+    return;
+  }
 
   const link =
     document.createElement("a");
 
-  link.href = anime.video;
+  link.href =
+    urls.auto;
 
   link.download =
-    anime.name + ".mp4";
+    "NOX-Anime.mp4";
 
-  link.target = "_blank";
+  link.target =
+    "_blank";
 
   document.body.appendChild(link);
 
@@ -1023,1035 +1105,671 @@ function downloadAnime(id){
 }
 
 
-/* ================= DAILY COINS ================= */
+/* =========================
+   MODAL
+========================= */
 
-function claimDaily(){
+function closeModal() {
 
-  const today =
-    new Date()
-      .toISOString()
-      .slice(0,10);
+  const player =
+    $("player");
 
+  if (player) {
 
-  const last =
-    localStorage.getItem(
-      DAILY_KEY
-    );
-
-
-  if(last === today){
-
-    alert(
-      "Daily coins already claimed today."
-    );
-
-    return;
-  }
-
-
-  coins += 10;
-
-  localStorage.setItem(
-    DAILY_KEY,
-    today
-  );
-
-
-  saveCoins();
-
-  updateCoins();
-
-
-  alert(
-    "🎉 You received +10 free coins!"
-  );
-
-}
-
-
-function updateCoins(){
-
-  $("coinCount").textContent =
-    coins;
-
-}
-
-
-/* ================= PREMIUM ================= */
-
-function redeemPremium(cost,days){
-
-  if(coins < cost){
-
-    alert(
-      "You need " +
-      cost +
-      " coins."
-    );
-
-    return;
-  }
-
-
-  coins -= cost;
-
-  const now = Date.now();
-
-  const base =
-    isPremium()
-    ? premiumUntil
-    : now;
-
-
-  premiumUntil =
-    base +
-    days *
-    24 *
-    60 *
-    60 *
-    1000;
-
-
-  localStorage.setItem(
-    PREMIUM_KEY,
-    String(premiumUntil)
-  );
-
-
-  saveCoins();
-
-  updateCoins();
-
-  updatePremium();
-
-
-  alert(
-    "👑 Premium activated for " +
-    days +
-    " days!"
-  );
-
-}
-
-
-function updatePremium(){
-
-  const box =
-    $("premiumStatus");
-
-  if(!box) return;
-
-
-  if(isPremium()){
-
-    const remaining =
-      Math.ceil(
-        (premiumUntil - Date.now()) /
-        86400000
-      );
-
-
-    box.innerHTML =
-      "👑 Premium Active • " +
-      remaining +
-      " day(s) remaining";
-
-  }else{
-
-    box.innerHTML =
-      "Free account • Redeem coins to unlock Premium.";
+    player.pause();
 
   }
 
-}
-
-
-function paymentNotice(){
-
-  alert(
-    "Payment system is not connected in this static GitHub Pages demo."
-  );
+  $("modal")
+    .classList.add("hidden");
 
 }
 
 
-/* ================= LOGIN ================= */
+$("modal")?.addEventListener(
+  "click",
+  function(event) {
 
-function openLogin(){
+    if (
+      event.target === $("modal")
+    ) {
 
-  closeModal("signupModal");
+      closeModal();
 
-  $("loginModal").classList.remove(
-    "hidden"
-  );
+    }
 
-}
-
-
-function openSignup(){
-
-  closeModal("loginModal");
-
-  $("signupModal").classList.remove(
-    "hidden"
-  );
-
-}
+  }
+);
 
 
-function signupUser(){
+/* =========================
+   LOGIN
+========================= */
+
+function login() {
 
   const username =
-    $("signupUsername").value.trim();
+    prompt("Username:");
+
+  if (!username) return;
 
   const password =
-    $("signupPassword").value;
+    prompt("Password:");
 
-
-  if(!username || !password){
-
-    alert(
-      "Please enter username and password."
-    );
-
-    return;
-  }
-
-
-  if(
-    users.some(
-      u =>
-        u.username.toLowerCase() ===
-        username.toLowerCase()
-    )
-  ){
-
-    alert(
-      "Username already exists."
-    );
-
-    return;
-  }
-
-
-  const newUser = {
-
-    id:
-      Date.now(),
-
-    username:
-      username,
-
-    password:
-      password,
-
-    role:
-      "user"
-
-  };
-
-
-  users.push(newUser);
-
-  saveUsers();
-
-
-  currentUser =
-    username;
-
-
-  localStorage.setItem(
-    CURRENT_USER_KEY,
-    currentUser
-  );
-
-
-  closeModal("signupModal");
-
-  updateLoginUI();
-
-
-  alert(
-    "Account created successfully."
-  );
-
-}
-
-
-function loginUser(){
-
-  const username =
-    $("loginUsername").value.trim();
-
-  const password =
-    $("loginPassword").value;
-
+  if (!password) return;
 
   const user =
     users.find(
-      u =>
-        u.username === username &&
-        u.password === password
+      item =>
+        item.username === username &&
+        item.password === password
     );
 
-
-  if(!user){
+  if (!user) {
 
     alert(
-      "Wrong username or password."
+      "❌ Wrong username or password."
     );
 
     return;
+
   }
-
-
-  currentUser =
-    user.username;
-
 
   localStorage.setItem(
     CURRENT_USER_KEY,
-    currentUser
+    JSON.stringify(user)
   );
-
-
-  closeModal("loginModal");
-
-  updateLoginUI();
-
 
   alert(
-    "Welcome " +
-    user.username +
-    "!"
+    `Welcome ${user.username}!`
   );
+
+  updateLoginButton();
 
 }
 
 
-function logoutUser(){
+function updateLoginButton() {
 
-  currentUser = "";
-
-  localStorage.removeItem(
-    CURRENT_USER_KEY
-  );
-
-  updateLoginUI();
-
-}
-
-
-function updateLoginUI(){
-
-  const loginBtn =
+  const button =
     $("loginBtn");
 
-  const adminBtn =
-    $("adminBtn");
+  if (!button) return;
 
+  const current =
+    JSON.parse(
+      localStorage.getItem(
+        CURRENT_USER_KEY
+      ) || "null"
+    );
 
-  if(!currentUser){
+  if (current) {
 
-    loginBtn.textContent =
+    button.textContent =
+      current.username;
+
+  } else {
+
+    button.textContent =
       "Login";
 
-    loginBtn.onclick =
-      openLogin;
-
-    adminBtn.classList.add(
-      "hidden"
-    );
-
-    return;
-  }
-
-
-  loginBtn.textContent =
-    "Logout";
-
-
-  loginBtn.onclick =
-    logoutUser;
-
-
-  if(isAdmin()){
-
-    adminBtn.classList.remove(
-      "hidden"
-    );
-
-  }else{
-
-    adminBtn.classList.add(
-      "hidden"
-    );
-
   }
 
 }
 
 
-/* ================= ADMIN ================= */
+/* =========================
+   ADMIN LOGIN
+========================= */
 
-function openAdmin(){
+function adminLogin() {
 
-  if(!isAdmin()){
+  const username =
+    prompt("Admin username:");
+
+  if (!username) return;
+
+  const password =
+    prompt("Admin password:");
+
+  if (!password) return;
+
+  const user =
+    users.find(
+      item =>
+        item.username === username &&
+        item.password === password &&
+        (
+          item.role === "admin" ||
+          item.role === "super"
+        )
+    );
+
+  if (!user) {
 
     alert(
-      "Admin access required."
+      "❌ Admin login failed."
     );
 
     return;
+
   }
 
-
-  renderAdminAnime();
-
-  renderAdminUsers();
-
-
-  $("adminModal").classList.remove(
-    "hidden"
-  );
+  openAdminPanel(user);
 
 }
 
 
-function adminTab(id,button){
+/* =========================
+   ADMIN PANEL
+========================= */
 
-  document
-    .querySelectorAll(
-      ".admin-tab-content"
-    )
-    .forEach(
-      el =>
-        el.classList.add("hidden")
-    );
+function openAdminPanel(user) {
 
+  $("modalBody").innerHTML = `
 
-  document
-    .querySelectorAll(
-      ".admin-tab"
-    )
-    .forEach(
-      el =>
-        el.classList.remove("active")
-    );
+    <div class="admin-panel">
 
+      <h2>
+        ⚙ NOX Admin Panel
+      </h2>
 
-  $(id).classList.remove(
-    "hidden"
-  );
+      <p style="color:#8296aa">
+        Logged in as:
+        <b>${escapeHTML(user.username)}</b>
+        (${escapeHTML(user.role)})
+      </p>
 
 
-  button.classList.add(
-    "active"
-  );
+      <hr style="
+        border-color:#18324d;
+        margin:20px 0;
+      ">
+
+
+      <h3>
+        ➕ Add Anime
+      </h3>
+
+      <div class="admin-row">
+
+        <input
+          id="adminName"
+          placeholder="Anime name"
+        >
+
+        <input
+          id="adminGenre"
+          placeholder="Genre"
+        >
+
+        <input
+          id="adminYear"
+          placeholder="Year"
+          type="number"
+        >
+
+        <input
+          id="adminRating"
+          placeholder="Rating"
+        >
+
+        <input
+          id="adminPoster"
+          placeholder="Poster filename e.g. slime-s4.jpg"
+        >
+
+        <select id="adminPremium">
+
+          <option value="false">
+            Free
+          </option>
+
+          <option value="true">
+            Premium
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <button
+        onclick="addAnime()">
+
+        Add Anime
+
+      </button>
+
+
+      <div class="admin-list">
+
+        <h3>
+          📚 Current Anime
+        </h3>
+
+        ${anime.map(item => `
+
+          <div class="admin-item">
+
+            <span>
+              ${escapeHTML(item.name)}
+            </span>
+
+            <button
+              onclick="deleteAnime(${item.id})">
+
+              Delete
+
+            </button>
+
+          </div>
+
+        `).join("")}
+
+      </div>
+
+
+      ${
+        user.role === "super"
+        ? `
+
+          <hr style="
+            border-color:#18324d;
+            margin:25px 0;
+          ">
+
+          <h3>
+            👑 Create Admin
+          </h3>
+
+          <div class="admin-row">
+
+            <input
+              id="newAdminUser"
+              placeholder="Username"
+            >
+
+            <input
+              id="newAdminPass"
+              placeholder="Password"
+            >
+
+          </div>
+
+          <button
+            onclick="createAdmin()">
+
+            Create Admin
+
+          </button>
+
+        `
+        : ""
+      }
+
+    </div>
+
+  `;
+
+  $("modal")
+    .classList.remove("hidden");
 
 }
 
 
-/* ================= ADMIN ANIME ================= */
+/* =========================
+   ADD ANIME
+========================= */
 
-function saveAnime(){
-
-  if(!isAdmin()){
-
-    alert(
-      "Admin access required."
-    );
-
-    return;
-  }
-
-
-  const id =
-    Number(
-      $("adminAnimeId").value
-    );
-
+function addAnime() {
 
   const name =
     $("adminName").value.trim();
 
   const genre =
     $("adminGenre").value.trim() ||
-    "Other";
+    "Action";
 
   const year =
-    $("adminYear").value.trim() ||
-    "2026";
+    Number(
+      $("adminYear").value
+    ) || 2026;
 
   const rating =
     $("adminRating").value.trim() ||
-    "N/A";
+    "8.0";
 
   const poster =
-    $("adminPoster").value.trim();
-
-  const video =
-    $("adminVideo").value.trim();
+    $("adminPoster").value.trim() ||
+    "slime-s4.jpg";
 
   const premium =
-    $("adminPremium").value ===
-    "true";
+    $("adminPremium").value === "true";
 
 
-  if(!name){
+  if (!name) {
 
     alert(
-      "Anime name is required."
+      "Anime name required."
     );
 
     return;
-  }
-
-
-  if(id){
-
-    const anime =
-      animeList.find(
-        a => a.id === id
-      );
-
-
-    if(anime){
-
-      anime.name =
-        name;
-
-      anime.genre =
-        genre;
-
-      anime.year =
-        year;
-
-      anime.rating =
-        rating;
-
-      anime.poster =
-        poster;
-
-      anime.video =
-        video;
-
-      anime.premium =
-        premium;
-
-    }
-
-  }else{
-
-    animeList.push({
-
-      id:
-        Date.now(),
-
-      name:
-        name,
-
-      genre:
-        genre,
-
-      year:
-        year,
-
-      rating:
-        rating,
-
-      season:
-        "TV",
-
-      poster:
-        poster,
-
-      video:
-        video,
-
-      premium:
-        premium,
-
-      trending:
-        true,
-
-      latest:
-        true
-
-    });
 
   }
 
 
-  saveAnimeData();
+  const newAnime = {
 
-  renderAnime();
+    id:
+      Date.now(),
 
-  renderGenres();
+    name,
 
-  renderAdminAnime();
+    genre,
 
-  clearAnimeForm();
+    year,
 
+    season:
+      "New",
+
+    rating,
+
+    poster,
+
+    trending:
+      true,
+
+    latest:
+      true,
+
+    premium
+
+  };
+
+
+  anime.unshift(
+    newAnime
+  );
+
+  saveAnime();
+
+  render();
 
   alert(
-    "Anime saved successfully."
+    "✅ Anime added!"
+  );
+
+  closeModal();
+
+}
+
+
+/* =========================
+   DELETE ANIME
+========================= */
+
+function deleteAnime(id) {
+
+  const item =
+    anime.find(
+      animeItem =>
+        animeItem.id === id
+    );
+
+  if (!item) return;
+
+  if (
+    !confirm(
+      `Delete ${item.name}?`
+    )
+  ) return;
+
+
+  anime =
+    anime.filter(
+      animeItem =>
+        animeItem.id !== id
+    );
+
+  saveAnime();
+
+  render();
+
+  alert(
+    "Anime deleted."
   );
 
 }
 
 
-function editAnime(id){
+/* =========================
+   CREATE ADMIN
+========================= */
 
-  const anime =
-    animeList.find(
-      a => a.id === id
+function createAdmin() {
+
+  const username =
+    $("newAdminUser")
+      ?.value.trim();
+
+  const password =
+    $("newAdminPass")
+      ?.value.trim();
+
+
+  if (!username || !password) {
+
+    alert(
+      "Username and password required."
     );
 
+    return;
 
-  if(!anime) return;
-
-
-  $("adminAnimeId").value =
-    anime.id;
-
-  $("adminName").value =
-    anime.name;
-
-  $("adminGenre").value =
-    anime.genre;
-
-  $("adminYear").value =
-    anime.year;
-
-  $("adminRating").value =
-    anime.rating;
-
-  $("adminPoster").value =
-    anime.poster || "";
-
-  $("adminVideo").value =
-    anime.video || "";
-
-  $("adminPremium").value =
-    anime.premium
-    ? "true"
-    : "false";
+  }
 
 
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
+  if (
+    users.some(
+      user =>
+        user.username === username
+    )
+  ) {
+
+    alert(
+      "Username already exists."
+    );
+
+    return;
+
+  }
+
+
+  users.push({
+
+    username,
+
+    password,
+
+    role: "admin"
+
   });
 
-}
-
-
-function deleteAnime(id){
-
-  if(!isAdmin()) return;
-
-
-  const anime =
-    animeList.find(
-      a => a.id === id
-    );
-
-
-  if(!anime) return;
-
-
-  if(
-    !confirm(
-      "Delete " +
-      anime.name +
-      "?"
-    )
-  ){
-
-    return;
-
-  }
-
-
-  animeList =
-    animeList.filter(
-      a => a.id !== id
-    );
-
-
-  watchlist =
-    watchlist.filter(
-      a => a !== id
-    );
-
-
-  saveAnimeData();
-
-  saveWatchlist();
-
-  renderAnime();
-
-  renderGenres();
-
-  renderAdminAnime();
-
-}
-
-
-function clearAnimeForm(){
-
-  $("adminAnimeId").value =
-    "";
-
-  $("adminName").value =
-    "";
-
-  $("adminGenre").value =
-    "";
-
-  $("adminYear").value =
-    "";
-
-  $("adminRating").value =
-    "";
-
-  $("adminPoster").value =
-    "";
-
-  $("adminVideo").value =
-    "";
-
-  $("adminPremium").value =
-    "false";
-
-}
-
-
-function renderAdminAnime(){
-
-  const box =
-    $("adminAnimeList");
-
-  if(!box) return;
-
-
-  if(!animeList.length){
-
-    box.innerHTML =
-      `<div class="empty">
-        No anime available.
-      </div>`;
-
-    return;
-  }
-
-
-  box.innerHTML =
-    animeList.map(
-      anime => `
-
-        <div class="admin-item">
-
-          <div>
-
-            <div class="admin-item-title">
-              ${escapeHTML(anime.name)}
-            </div>
-
-            <div class="admin-item-meta">
-              ${escapeHTML(anime.genre)}
-              •
-              ${escapeHTML(anime.year)}
-              •
-              ${
-                anime.video
-                ? "Video ✓"
-                : "Video not added"
-              }
-            </div>
-
-          </div>
-
-
-          <button
-            onclick="editAnime(${anime.id})"
-          >
-            ✏ Edit
-          </button>
-
-
-          <button
-            class="delete"
-            onclick="deleteAnime(${anime.id})"
-          >
-            🗑 Delete
-          </button>
-
-        </div>
-
-      `
-    ).join("");
-
-}
-
-
-/* ================= ADMIN USERS ================= */
-
-function renderAdminUsers(){
-
-  const box =
-    $("adminUsersList");
-
-  if(!box) return;
-
-
-  box.innerHTML =
-    users.map(
-      user => `
-
-        <div class="admin-item">
-
-          <div>
-
-            <div class="admin-item-title">
-              ${escapeHTML(user.username)}
-            </div>
-
-            <div class="admin-item-meta">
-              Role:
-              ${escapeHTML(user.role)}
-            </div>
-
-          </div>
-
-
-          ${
-            user.role === "super"
-
-            ?
-
-            `<span>
-              👑 Super Admin
-            </span>`
-
-            :
-
-            isSuperAdmin()
-
-            ?
-
-            `
-
-            <button
-              onclick="toggleUserRole(${user.id})"
-            >
-              ${
-                user.role === "admin"
-                ? "Make User"
-                : "Make Admin"
-              }
-            </button>
-
-            <button
-              class="delete"
-              onclick="deleteUser(${user.id})"
-            >
-              🗑
-            </button>
-
-            `
-
-            :
-
-            `<span>
-              ${escapeHTML(user.role)}
-            </span>`
-
-          }
-
-        </div>
-
-      `
-    ).join("");
-
-}
-
-
-function toggleUserRole(id){
-
-  if(!isSuperAdmin()){
-
-    alert(
-      "Only Super Admin can change user roles."
-    );
-
-    return;
-  }
-
-
-  const user =
-    users.find(
-      u => u.id === id
-    );
-
-
-  if(!user) return;
-
-
-  if(user.role === "admin"){
-
-    user.role =
-      "user";
-
-  }else{
-
-    user.role =
-      "admin";
-
-  }
-
 
   saveUsers();
 
-  renderAdminUsers();
+  alert(
+    "✅ New admin created!"
+  );
 
 }
 
 
-function deleteUser(id){
+/* =========================
+   ESCAPE
+========================= */
 
-  if(!isSuperAdmin()){
+function escapeHTML(value) {
 
-    alert(
-      "Only Super Admin can delete users."
-    );
-
-    return;
-  }
-
-
-  const user =
-    users.find(
-      u => u.id === id
-    );
-
-
-  if(!user) return;
-
-
-  if(user.role === "super"){
-
-    alert(
-      "Super Admin cannot be removed."
-    );
-
-    return;
-  }
-
-
-  if(
-    !confirm(
-      "Delete user " +
-      user.username +
-      "?"
-    )
-  ){
-
-    return;
-  }
-
-
-  users =
-    users.filter(
-      u => u.id !== id
-    );
-
-
-  saveUsers();
-
-  renderAdminUsers();
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 
 }
 
 
-/* ================= UTILITIES ================= */
+function escapeAttribute(value) {
 
-function scrollToSection(id){
-
-  const element =
-    $(id);
-
-  if(element){
-
-    element.scrollIntoView({
-      behavior:"smooth"
-    });
-
-  }
+  return String(value)
+    .replaceAll("'", "\\'")
+    .replaceAll('"', "&quot;");
 
 }
 
 
-function escapeHTML(value){
+/* =========================
+   SEARCH
+========================= */
 
-  return String(value ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-
-}
+$("search")?.addEventListener(
+  "input",
+  render
+);
 
 
-function escapeJS(value){
+/* =========================
+   BUTTONS
+========================= */
 
-  return String(value ?? "")
-    .replaceAll("\\","\\\\")
-    .replaceAll("'","\\'");
-}
-
-
-/* ================= CLOSE MODAL ON BACKDROP ================= */
-
-document.addEventListener(
+$("dailyBtn")?.addEventListener(
   "click",
-  function(event){
+  claimDaily
+);
 
-    if(
-      event.target.classList.contains(
-        "modal"
-      )
-    ){
+$("loginBtn")?.addEventListener(
+  "click",
+  login
+);
 
-      event.target.classList.add(
-        "hidden"
-      );
+$("adminBtn")?.addEventListener(
+  "click",
+  adminLogin
+);
+
+
+/* =========================
+   START APP
+========================= */
+
+function startApp() {
+
+  try {
+
+    render();
+
+    updateLoginButton();
+
+    $("loader")
+      ?.classList.add("hidden");
+
+    $("app")
+      ?.classList.remove("hidden");
+
+  } catch (error) {
+
+    console.error(
+      "NOX Anime Error:",
+      error
+    );
+
+    $("loader").innerHTML = `
+
+      <div class="loader-logo">
+        NOX<span>ANIME</span>
+      </div>
+
+      <p style="color:#ff7070">
+        Something went wrong.
+      </p>
+
+      <button
+        onclick="location.reload()"
+        style="
+          padding:12px 20px;
+          background:#168cff;
+          color:white;
+          border:0;
+          border-radius:8px;
+        ">
+
+        Reload
+
+      </button>
+
+    `;
+
+  }
+
+}
+
+
+/* =========================
+   FAILSAFE LOADER
+========================= */
+
+/*
+  Agar kisi browser mein koi
+  minor error aaye to website
+  permanently loading par nahi
+  rukegi.
+*/
+
+setTimeout(() => {
+
+  if (
+    $("loader") &&
+    !$("loader").classList.contains("hidden")
+  ) {
+
+    try {
+
+      render();
+
+      $("loader")
+        .classList.add("hidden");
+
+      $("app")
+        .classList.remove("hidden");
+
+    } catch (error) {
+
+      console.error(error);
 
     }
 
   }
-);
+
+}, 2500);
 
 
-/* ================= ESC KEY ================= */
+/* =========================
+   RUN
+========================= */
 
-document.addEventListener(
-  "keydown",
-  function(event){
+if (
+  document.readyState === "loading"
+) {
 
-    if(event.key !== "Escape"){
-      return;
-    }
+  document.addEventListener(
+    "DOMContentLoaded",
+    startApp
+  );
 
+} else {
 
-    document
-      .querySelectorAll(".modal")
-      .forEach(
-        modal =>
-          modal.classList.add("hidden")
-      );
+  startApp();
 
-  }
-);
+     }
