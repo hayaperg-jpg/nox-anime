@@ -1,67 +1,46 @@
-/* =====================================
+/* =================================
    NOX ANIME
-   ===================================== */
+   ================================= */
 
 
-/* ================= DATA ================= */
-
-const animeData = {
-
-  name: "That Time I Got Reincarnated as a Slime",
-
-  season: "Season 4",
-
-  episode: "Episode 1",
-
-  year: "2026",
-
-  rating: "8.5"
-
-};
-
-
-/* ================= HELPERS ================= */
-
-function $(id) {
-  return document.getElementById(id);
-}
-
-
-/* ================= COINS ================= */
+/* COINS */
 
 let coins = Number(
   localStorage.getItem("nox_coins") || 10
 );
 
-$("coins").textContent = coins;
+document.getElementById("coins").textContent = coins;
 
 
-/* ================= WATCHLIST ================= */
+/* WATCHLIST */
 
 let watchlisted =
   localStorage.getItem("nox_watchlist") === "true";
 
 
-/* ================= OPEN ANIME ================= */
+/* OPEN PLAYER */
 
 function openAnime() {
 
-  const modal = $("videoModal");
-
-  modal.classList.remove("hidden");
+  document
+    .getElementById("videoModal")
+    .classList
+    .remove("hidden");
 
   document.body.style.overflow = "hidden";
 
 }
 
 
-/* ================= CLOSE ANIME ================= */
+/* CLOSE PLAYER */
 
 function closeAnime() {
 
-  const modal = $("videoModal");
+  const modal =
+    document.getElementById("videoModal");
 
-  const video = $("animeVideo");
+  const video =
+    document.getElementById("animeVideo");
 
   if (video) {
 
@@ -78,7 +57,7 @@ function closeAnime() {
 }
 
 
-/* ================= WATCHLIST ================= */
+/* WATCHLIST */
 
 function addWatchlist() {
 
@@ -96,77 +75,81 @@ function addWatchlist() {
 
 function updateWatchlist() {
 
-  const box = $("watchlistGrid");
+  const box =
+    document.getElementById("watchlistGrid");
 
   if (!box) return;
 
 
-  if (watchlisted) {
-
-    box.innerHTML = `
-
-      <article
-        class="anime-card"
-        onclick="openAnime()"
-      >
-
-        <div class="poster">
-
-          <img
-            src="slime-s4.webp"
-            alt="That Time I Got Reincarnated as a Slime"
-          >
-
-          <div class="poster-overlay">
-            ▶ Watch
-          </div>
-
-        </div>
-
-        <div class="anime-info">
-
-          <h3>
-            That Time I Got Reincarnated as a Slime
-          </h3>
-
-          <p>
-            Season 4 • Fantasy • Isekai
-          </p>
-
-          <div class="card-bottom">
-
-            <span class="rating">
-              ⭐ 8.5
-            </span>
-
-            <span class="hd">
-              HD
-            </span>
-
-          </div>
-
-        </div>
-
-      </article>
-
-    `;
-
-  } else {
+  if (!watchlisted) {
 
     box.innerHTML =
       "Your watchlist is empty.";
 
+    return;
+
   }
+
+
+  box.innerHTML = `
+
+    <article
+      class="anime-card"
+      onclick="openAnime()"
+    >
+
+      <div class="poster">
+
+        <img
+          src="slime-s4.jpg"
+          alt="That Time I Got Reincarnated as a Slime"
+        >
+
+        <div class="poster-overlay">
+          ▶ Watch
+        </div>
+
+      </div>
+
+      <div class="anime-info">
+
+        <h3>
+          That Time I Got Reincarnated as a Slime
+        </h3>
+
+        <p>
+          Season 4 • Fantasy • Isekai
+        </p>
+
+        <div class="card-bottom">
+
+          <span class="rating">
+            ⭐ 8.5
+          </span>
+
+          <span class="hd">
+            HD
+          </span>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  `;
 
 }
 
 
-/* ================= SEARCH ================= */
+/* SEARCH */
 
 function searchAnime() {
 
   const value =
-    $("search").value
+    document
+      .getElementById("search")
+      .value
       .trim()
       .toLowerCase();
 
@@ -177,37 +160,56 @@ function searchAnime() {
     );
 
 
-  cards.forEach(card => {
+  cards.forEach(function(card) {
 
     const text =
       card.innerText.toLowerCase();
 
 
-    if (text.includes(value)) {
-
-      card.style.display = "";
-
-    } else {
-
-      card.style.display = "none";
-
-    }
+    card.style.display =
+      text.includes(value)
+        ? ""
+        : "none";
 
   });
 
 }
 
 
-/* ================= VIDEO DOWNLOAD ================= */
+/* LOGIN */
+
+document
+  .getElementById("loginBtn")
+  .addEventListener(
+    "click",
+    function() {
+
+      const username =
+        prompt("Enter your username:");
+
+      if (!username) return;
+
+      localStorage.setItem(
+        "nox_username",
+        username
+      );
+
+      alert(
+        "Welcome to NOX Anime, " +
+        username +
+        "!"
+      );
+
+    }
+  );
+
+
+/* DOWNLOAD */
 
 function downloadVideo() {
 
   const video =
-    $("animeVideo");
-
-
-  if (!video) return;
-
+    document.getElementById("animeVideo");
 
   const source =
     video.querySelector("source");
@@ -222,7 +224,7 @@ function downloadVideo() {
   ) {
 
     alert(
-      "Video URL abhi add nahi ki gayi."
+      "Pehle authorized video URL add karo."
     );
 
     return;
@@ -233,12 +235,10 @@ function downloadVideo() {
   const link =
     document.createElement("a");
 
-
   link.href = source.src;
 
   link.download =
-    "That-Time-I-Got-Reincarnated-as-a-Slime-Episode-1.mp4";
-
+    "slime-season-4-episode-1.mp4";
 
   document.body.appendChild(link);
 
@@ -249,85 +249,50 @@ function downloadVideo() {
 }
 
 
-/* ================= LOGIN ================= */
+/* QUALITY */
 
-$("loginBtn").addEventListener(
-  "click",
-  function () {
+document
+  .getElementById("quality")
+  .addEventListener(
+    "change",
+    function() {
 
-    const username =
-      prompt(
-        "Enter your username:"
+      if (this.value === "auto") {
+        return;
+      }
+
+      alert(
+        this.value +
+        " selected. Actual quality switching ke liye separate authorized stream chahiye."
       );
 
-
-    if (!username) return;
-
-
-    localStorage.setItem(
-      "nox_username",
-      username
-    );
-
-
-    alert(
-      "Welcome to NOX Anime, " +
-      username +
-      "!"
-    );
-
-  }
-);
-
-
-/* ================= QUALITY ================= */
-
-$("quality").addEventListener(
-  "change",
-  function () {
-
-    const selected =
-      this.value;
-
-
-    if (selected === "auto") {
-      return;
     }
+  );
 
 
-    alert(
-      selected +
-      " selected.\n\nActual quality switching requires separate authorized video streams."
-    );
+/* AUDIO */
 
-  }
-);
+document
+  .getElementById("audio")
+  .addEventListener(
+    "change",
+    function() {
 
+      alert(
+        this.value +
+        " selected. Actual audio switching ke liye authorized audio track chahiye."
+      );
 
-/* ================= AUDIO ================= */
-
-$("audio").addEventListener(
-  "change",
-  function () {
-
-    const language =
-      this.value;
+    }
+  );
 
 
-    alert(
-      language +
-      " selected.\n\nActual audio switching requires an authorized audio track."
-    );
-
-  }
-);
-
-
-/* ================= ADMIN ================= */
+/* ADMIN OPEN */
 
 function openAdmin() {
 
-  $("adminModal")
+  document
+    .getElementById("adminModal")
     .classList
     .remove("hidden");
 
@@ -336,9 +301,12 @@ function openAdmin() {
 }
 
 
+/* ADMIN CLOSE */
+
 function closeAdmin() {
 
-  $("adminModal")
+  document
+    .getElementById("adminModal")
     .classList
     .add("hidden");
 
@@ -347,23 +315,20 @@ function closeAdmin() {
 }
 
 
-/* ================= ADMIN LOGIN ================= */
-
-/*
-   DEMO LOGIN ONLY.
-
-   Super Admin:
-   Username: superadmin
-   Password: ANIMEADMIN
-*/
+/* ADMIN LOGIN */
 
 function adminLogin() {
 
   const username =
-    $("adminUser").value.trim();
+    document
+      .getElementById("adminUser")
+      .value
+      .trim();
 
   const password =
-    $("adminPassword").value;
+    document
+      .getElementById("adminPassword")
+      .value;
 
 
   if (
@@ -371,7 +336,8 @@ function adminLogin() {
     password === "ANIMEADMIN"
   ) {
 
-    $("adminDashboard")
+    document
+      .getElementById("adminDashboard")
       .classList
       .remove("hidden");
 
@@ -385,7 +351,6 @@ function adminLogin() {
       "Super Admin login successful."
     );
 
-
   } else {
 
     alert(
@@ -397,11 +362,11 @@ function adminLogin() {
 }
 
 
-/* ================= ESC KEY ================= */
+/* ESC */
 
 document.addEventListener(
   "keydown",
-  function (event) {
+  function(event) {
 
     if (event.key === "Escape") {
 
@@ -415,36 +380,38 @@ document.addEventListener(
 );
 
 
-/* ================= MODAL BACKDROP ================= */
+/* CLICK OUTSIDE PLAYER */
 
-$("videoModal").addEventListener(
-  "click",
-  function (event) {
+document
+  .getElementById("videoModal")
+  .addEventListener(
+    "click",
+    function(event) {
 
-    if (event.target === this) {
-
-      closeAnime();
-
-    }
-
-  }
-);
-
-
-$("adminModal").addEventListener(
-  "click",
-  function (event) {
-
-    if (event.target === this) {
-
-      closeAdmin();
+      if (event.target === this) {
+        closeAnime();
+      }
 
     }
-
-  }
-);
+  );
 
 
-/* ================= START ================= */
+/* CLICK OUTSIDE ADMIN */
+
+document
+  .getElementById("adminModal")
+  .addEventListener(
+    "click",
+    function(event) {
+
+      if (event.target === this) {
+        closeAdmin();
+      }
+
+    }
+  );
+
+
+/* START */
 
 updateWatchlist();
