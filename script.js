@@ -1,11 +1,39 @@
 /* =====================================================
-   NOX ANIME
-   COMPLETE SCRIPT.JS
+   NOX ANIME - COMPLETE SCRIPT.JS
    ===================================================== */
 
 
 /* =========================
-   STORAGE KEYS
+   HELPERS
+========================= */
+
+const $ = (id) => document.getElementById(id);
+
+function save(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function load(key, fallback) {
+  try {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : fallback;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function escapeHTML(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+/* =========================
+   STORAGE
 ========================= */
 
 const COINS_KEY = "nox_coins";
@@ -15,27 +43,6 @@ const USERS_KEY = "nox_users";
 const DAILY_KEY = "nox_daily";
 const CURRENT_USER_KEY = "nox_current_user";
 const ANIME_KEY = "nox_anime";
-
-
-/* =========================
-   HELPERS
-========================= */
-
-const $ = (id) => document.getElementById(id);
-
-function saveJSON(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
-}
-
-function loadJSON(key, fallback) {
-  try {
-    const data = localStorage.getItem(key);
-    return data ? JSON.parse(data) : fallback;
-  } catch (error) {
-    console.error("Storage error:", error);
-    return fallback;
-  }
-}
 
 
 /* =========================
@@ -308,26 +315,21 @@ const defaultAnime = [
 
 
 /* =========================
-   ANIME DATA
+   LOAD DATA
 ========================= */
 
-let anime = loadJSON(ANIME_KEY, null);
+let anime = load(ANIME_KEY, null);
 
 if (!Array.isArray(anime) || anime.length === 0) {
   anime = defaultAnime;
-  saveJSON(ANIME_KEY, anime);
+  save(ANIME_KEY, anime);
 }
-
-
-/* =========================
-   USER DATA
-========================= */
 
 let coins = Number(
   localStorage.getItem(COINS_KEY) || 10
 );
 
-let watchlist = loadJSON(
+let watchlist = load(
   WATCH_KEY,
   []
 );
@@ -336,18 +338,18 @@ let premiumUntil = Number(
   localStorage.getItem(PREMIUM_KEY) || 0
 );
 
-let users = loadJSON(
+let users = load(
   USERS_KEY,
   []
 );
 
-let currentUser = localStorage.getItem(
-  CURRENT_USER_KEY
-) || "Guest";
+let currentUser =
+  localStorage.getItem(CURRENT_USER_KEY) ||
+  "Guest";
 
 
 /* =========================
-   DEFAULT ADMIN USERS
+   DEFAULT USERS
 ========================= */
 
 if (!Array.isArray(users) || users.length === 0) {
@@ -368,47 +370,7 @@ if (!Array.isArray(users) || users.length === 0) {
 
   ];
 
-  saveJSON(USERS_KEY, users);
-}
-
-
-/* =========================
-   SAVE DATA
-========================= */
-
-function saveCoins() {
-  localStorage.setItem(
-    COINS_KEY,
-    String(coins)
-  );
-}
-
-function saveWatchlist() {
-  saveJSON(
-    WATCH_KEY,
-    watchlist
-  );
-}
-
-function savePremium() {
-  localStorage.setItem(
-    PREMIUM_KEY,
-    String(premiumUntil)
-  );
-}
-
-function saveUsers() {
-  saveJSON(
-    USERS_KEY,
-    users
-  );
-}
-
-function saveAnime() {
-  saveJSON(
-    ANIME_KEY,
-    anime
-  );
+  save(USERS_KEY, users);
 }
 
 
@@ -417,44 +379,31 @@ function saveAnime() {
 ========================= */
 
 function hasPremium() {
-
   return Date.now() < premiumUntil;
-
 }
-
 
 function updatePremium() {
 
-  const status = $("premiumStatus");
+  const box = $("premiumStatus");
 
-  if (!status) return;
+  if (!box) return;
 
   if (hasPremium()) {
 
-    const remaining =
-      Math.ceil(
-        (premiumUntil - Date.now()) /
-        (1000 * 60 * 60 * 24)
-      );
+    const days = Math.ceil(
+      (premiumUntil - Date.now()) /
+      86400000
+    );
 
-    status.innerHTML = `
-      <div class="premium-active">
-        👑 Premium Active
-        <br>
-        <small>${remaining} day(s) remaining</small>
-      </div>
-    `;
+    box.innerHTML =
+      `👑 Premium Active — ${days} day(s) remaining`;
 
   } else {
 
-    status.innerHTML = `
-      <div class="premium-inactive">
-        Premium inactive
-      </div>
-    `;
+    box.innerHTML =
+      `Premium inactive`;
 
   }
-
 }
 
 
@@ -467,13 +416,13 @@ function claimDaily() {
   const today =
     new Date().toISOString().slice(0, 10);
 
-  const lastClaim =
+  const last =
     localStorage.getItem(DAILY_KEY);
 
-  if (lastClaim === today) {
+  if (last === today) {
 
     alert(
-      "Daily coins already claimed today."
+      "You already claimed today's 10 coins."
     );
 
     return;
@@ -486,12 +435,15 @@ function claimDaily() {
     today
   );
 
-  saveCoins();
+  localStorage.setItem(
+    COINS_KEY,
+    String(coins)
+  );
 
   render();
 
   alert(
-    "🎁 You received +10 coins!"
+    "🎁 +10 coins added!"
   );
 }
 
@@ -505,7 +457,7 @@ function redeemPremium(cost, days) {
   if (hasPremium()) {
 
     alert(
-      "You already have active Premium."
+      "You already have Premium."
     );
 
     return;
@@ -514,7 +466,7 @@ function redeemPremium(cost, days) {
   if (coins < cost) {
 
     alert(
-      `You need ${cost} coins. You currently have ${coins}.`
+      `You need ${cost} coins. You have ${coins}.`
     );
 
     return;
@@ -524,10 +476,17 @@ function redeemPremium(cost, days) {
 
   premiumUntil =
     Date.now() +
-    days * 24 * 60 * 60 * 1000;
+    days * 86400000;
 
-  saveCoins();
-  savePremium();
+  localStorage.setItem(
+    COINS_KEY,
+    String(coins)
+  );
+
+  localStorage.setItem(
+    PREMIUM_KEY,
+    String(premiumUntil)
+  );
 
   render();
 
@@ -541,22 +500,15 @@ function redeemPremium(cost, days) {
    WATCHLIST
 ========================= */
 
-function isInWatchlist(id) {
-
-  return watchlist.includes(id);
-
-}
-
-
 function toggleWatchlist(id) {
 
   id = Number(id);
 
-  if (isInWatchlist(id)) {
+  if (watchlist.includes(id)) {
 
     watchlist =
       watchlist.filter(
-        item => Number(item) !== id
+        x => Number(x) !== id
       );
 
   } else {
@@ -565,26 +517,24 @@ function toggleWatchlist(id) {
 
   }
 
-  saveWatchlist();
+  save(
+    WATCH_KEY,
+    watchlist
+  );
 
   render();
 }
-
-
-/* =========================
-   OLD COMPATIBILITY
-========================= */
 
 function toggleWatch(name) {
 
   const item =
     anime.find(
-      a => a.name === name
+      x => x.name === name
     );
 
-  if (!item) return;
-
-  toggleWatchlist(item.id);
+  if (item) {
+    toggleWatchlist(item.id);
+  }
 }
 
 
@@ -592,51 +542,53 @@ function toggleWatch(name) {
    SEARCH
 ========================= */
 
-function getSearchValue() {
+function getFilteredAnime() {
 
   const input = $("search");
 
-  if (!input) return "";
+  const query =
+    input
+      ? input.value.trim().toLowerCase()
+      : "";
 
-  return input.value
-    .trim()
-    .toLowerCase();
+  if (!query) {
+    return anime;
+  }
 
+  return anime.filter(item =>
+
+    item.name
+      .toLowerCase()
+      .includes(query)
+
+    ||
+
+    item.genre
+      .toLowerCase()
+      .includes(query)
+
+    ||
+
+    String(item.year)
+      .includes(query)
+
+  );
 }
 
 
 /* =========================
-   RENDER
+   MAIN RENDER
 ========================= */
 
 function render() {
 
-  const query =
-    getSearchValue();
-
-  let filtered = anime.filter(item => {
-
-    if (!query) return true;
-
-    return (
-      item.name
-        .toLowerCase()
-        .includes(query) ||
-
-      item.genre
-        .toLowerCase()
-        .includes(query) ||
-
-      String(item.year)
-        .includes(query)
-    );
-
-  });
+  const list =
+    getFilteredAnime();
 
 
   renderGrid(
     "trendingGrid",
-    filtered.filter(
+    list.filter(
       item => item.trending
     )
   );
@@ -644,7 +596,7 @@ function render() {
 
   renderGrid(
     "latestGrid",
-    filtered.filter(
+    list.filter(
       item => item.latest
     )
   );
@@ -652,54 +604,50 @@ function render() {
 
   renderGrid(
     "watchGrid",
-    filtered.filter(
+    list.filter(
       item =>
-        watchlist.includes(item.id)
+        watchlist.includes(
+          Number(item.id)
+        )
     )
   );
 
 
-  renderGenres(filtered);
+  renderGenres(list);
 
 
-  const coinBox = $("coins");
+  const coinElement =
+    $("coins");
 
-  if (coinBox) {
-    coinBox.textContent =
+  if (coinElement) {
+    coinElement.textContent =
       coins;
   }
 
 
   updatePremium();
 
-
   updateLoginButton();
-
 }
 
 
 /* =========================
-   ANIME GRID
+   ANIME CARDS
 ========================= */
 
-function renderGrid(
-  elementId,
-  list
-) {
+function renderGrid(id, list) {
 
-  const container =
-    $(elementId);
+  const container = $(id);
 
   if (!container) return;
 
 
-  if (!list || list.length === 0) {
+  if (!list.length) {
 
-    container.innerHTML = `
-      <div class="empty-state">
+    container.innerHTML =
+      `<p style="color:#71849b">
         No anime found.
-      </div>
-    `;
+      </p>`;
 
     return;
   }
@@ -708,60 +656,87 @@ function renderGrid(
   container.innerHTML =
     list.map(item => {
 
-      const inWatch =
-        isInWatchlist(item.id);
+      const saved =
+        watchlist.includes(
+          Number(item.id)
+        );
 
-      const premiumBadge =
-        item.premium
-          ? `<span class="premium-badge">👑 PREMIUM</span>`
-          : "";
 
       return `
 
         <article class="anime-card">
 
-          <div class="poster-wrap">
-
-            <img
-              class="poster"
-              src="${item.poster || "slime-s4.jpg"}"
-              alt="${escapeHTML(item.name)}"
-              onerror="this.src='slime-s4.jpg'"
-            >
-
-            ${premiumBadge}
-
-            <div class="rating">
-              ⭐ ${item.rating}
-            </div>
-
-          </div>
+          <img
+            class="poster"
+            src="${escapeHTML(
+              item.poster || "slime-s4.jpg"
+            )}"
+            alt="${escapeHTML(item.name)}"
+            onerror="this.src='slime-s4.jpg'"
+          >
 
 
-          <div class="anime-info">
+          <div class="card-info">
 
             <h3>
               ${escapeHTML(item.name)}
             </h3>
 
-            <p>
+
+            <div class="card-meta">
+
               ${escapeHTML(item.genre)}
               •
               ${item.year}
-            </p>
+              •
+              ⭐ ${item.rating}
 
-            <div class="card-actions">
+            </div>
+
+
+            ${
+              item.premium
+                ? `<div style="
+                    color:#45aaff;
+                    font-size:12px;
+                    margin-top:7px;
+                    font-weight:700;
+                  ">
+                    👑 PREMIUM
+                  </div>`
+                : ""
+            }
+
+
+            <div style="
+              display:flex;
+              gap:7px;
+              margin-top:12px;
+            ">
 
               <button
                 class="watch-btn"
+                style="
+                  padding:9px 12px;
+                  font-size:12px;
+                "
                 onclick="openAnime(${item.id})">
+
                 ▶ Watch
+
               </button>
+
 
               <button
                 class="watchlist-btn"
+                style="
+                  padding:9px 10px;
+                  font-size:12px;
+                "
                 onclick="toggleWatchlist(${item.id})">
-                ${inWatch ? "✓ Saved" : "＋ Watchlist"}
+
+                ${saved ? "✓ Saved" : "＋"}
+
               </button>
 
             </div>
@@ -773,7 +748,6 @@ function renderGrid(
       `;
 
     }).join("");
-
 }
 
 
@@ -797,15 +771,6 @@ function renderGenres(list) {
     )];
 
 
-  if (genres.length === 0) {
-
-    container.innerHTML =
-      `<div class="empty-state">No genres found.</div>`;
-
-    return;
-  }
-
-
   container.innerHTML =
     genres.map(genre => {
 
@@ -815,43 +780,36 @@ function renderGenres(list) {
             item.genre === genre
         ).length;
 
+
       return `
 
         <button
-          class="genre-card"
-          onclick="filterGenre('${escapeAttribute(genre)}')">
+          class="genre-btn"
+          onclick="filterGenre('${escapeHTML(genre)}')">
 
-          <span>🎭</span>
-
-          <strong>
-            ${escapeHTML(genre)}
-          </strong>
-
-          <small>
-            ${count} anime
-          </small>
+          🎭 ${escapeHTML(genre)}
+          <small> (${count})</small>
 
         </button>
 
       `;
 
     }).join("");
-
 }
 
 
 /* =========================
-   GENRE FILTER
+   FILTER GENRE
 ========================= */
 
 function filterGenre(genre) {
 
-  const search =
+  const input =
     $("search");
 
-  if (!search) return;
+  if (!input) return;
 
-  search.value =
+  input.value =
     genre;
 
   render();
@@ -860,7 +818,6 @@ function filterGenre(genre) {
     top: 0,
     behavior: "smooth"
   });
-
 }
 
 
@@ -870,59 +827,57 @@ function filterGenre(genre) {
 
 function showAll() {
 
-  const search =
+  const input =
     $("search");
 
-  if (search) {
-    search.value = "";
+  if (input) {
+    input.value = "";
   }
 
   render();
 
-  const trending =
+  const section =
     $("trending");
 
-  if (trending) {
+  if (section) {
 
-    trending.scrollIntoView({
+    section.scrollIntoView({
       behavior: "smooth"
     });
 
   }
-
 }
 
 
-/* =========================
-   ANIME PLAYER
-========================= */
+/* =====================================================
+   VIDEO
+   ===================================================== */
 
 
 /*
-  IMPORTANT:
+   Yahan sirf apne authorized
+   video URLs add karne hain.
 
-  Add only authorized video URLs here.
+   Example:
 
-  Example:
-
-  1: {
-    auto: "https://your-domain.com/video.mp4",
-    "720p": "https://your-domain.com/video-720.mp4",
-    "1080p": "https://your-domain.com/video-1080.mp4",
-    "1440p": "",
-    "4k": ""
-  }
+   auto: "https://example.com/video.mp4"
 
 */
 
 const VIDEO_URLS = {
 
   1: {
+
     auto: "",
+
     "720p": "",
+
     "1080p": "",
+
     "1440p": "",
+
     "4k": ""
+
   }
 
 };
@@ -932,27 +887,7 @@ let currentAnimeId = null;
 
 
 /* =========================
-   AUDIO DATA
-========================= */
-
-const AUDIO_URLS = {
-
-  1: {
-    Original: "",
-    Hindi: "",
-    English: "",
-    Urdu: "",
-    Spanish: "",
-    French: "",
-    German: "",
-    Korean: ""
-  }
-
-};
-
-
-/* =========================
-   OPEN ANIME
+   OPEN PLAYER
 ========================= */
 
 function openAnime(id) {
@@ -961,7 +896,7 @@ function openAnime(id) {
 
   const item =
     anime.find(
-      a => Number(a.id) === id
+      x => Number(x.id) === id
     );
 
   if (!item) {
@@ -978,7 +913,7 @@ function openAnime(id) {
   ) {
 
     alert(
-      "👑 This anime requires Premium."
+      "👑 Premium required for this anime."
     );
 
     return;
@@ -995,106 +930,58 @@ function openAnime(id) {
   const body =
     $("modalBody");
 
-
   if (!modal || !body) return;
 
 
-  const videoData =
+  const urls =
     VIDEO_URLS[id] || {};
 
 
-  const audioData =
-    AUDIO_URLS[id] || {};
-
-
-  const firstVideo =
-    videoData.auto ||
-    videoData["720p"] ||
+  const firstURL =
+    urls.auto ||
+    urls["720p"] ||
     "";
 
 
   body.innerHTML = `
 
-    <div class="player-header">
-
-      <div>
-
-        <h2>
-          ${escapeHTML(item.name)}
-        </h2>
-
-        <p>
-          ${escapeHTML(item.genre)}
-          •
-          ${item.year}
-          •
-          ${escapeHTML(item.season)}
-        </p>
-
-      </div>
-
-    </div>
+    <h2 class="modal-title">
+      ${escapeHTML(item.name)}
+    </h2>
 
 
-    <div class="video-area">
+    <p style="
+      color:#7f93aa;
+      margin-top:5px;
+    ">
+      ${escapeHTML(item.genre)}
+      •
+      ${item.year}
+      •
+      ${escapeHTML(item.season)}
+      •
+      ⭐ ${item.rating}
+    </p>
 
-      <video
-        id="player"
-        class="real-player"
-        controls
-        playsinline
-        preload="metadata">
 
-        <source
-          id="videoSource"
-          src="${firstVideo}"
-          type="video/mp4">
+    <video
+      id="player"
+      class="real-player"
+      controls
+      playsinline
+      preload="metadata">
 
-      </video>
+      <source
+        id="videoSource"
+        src="${firstURL}"
+        type="video/mp4">
 
-    </div>
+    </video>
 
 
     <div class="player-controls">
 
-      <div class="control-group">
-
-        <label>
-          Episode
-        </label>
-
-        <select id="episodeSelect">
-
-          <option value="1">
-            Episode 1
-          </option>
-
-          <option value="2">
-            Episode 2
-          </option>
-
-          <option value="3">
-            Episode 3
-          </option>
-
-          <option value="4">
-            Episode 4
-          </option>
-
-          <option value="5">
-            Episode 5
-          </option>
-
-          <option value="6">
-            Episode 6
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <div class="control-group">
+      <div>
 
         <label>
           Quality
@@ -1127,7 +1014,7 @@ function openAnime(id) {
       </div>
 
 
-      <div class="control-group">
+      <div>
 
         <label>
           Audio
@@ -1135,35 +1022,35 @@ function openAnime(id) {
 
         <select id="audioSelect">
 
-          <option value="Original">
+          <option>
             Original / Japanese
           </option>
 
-          <option value="Hindi">
+          <option>
             Hindi
           </option>
 
-          <option value="English">
+          <option>
             English
           </option>
 
-          <option value="Urdu">
+          <option>
             Urdu
           </option>
 
-          <option value="Spanish">
+          <option>
             Spanish
           </option>
 
-          <option value="French">
+          <option>
             French
           </option>
 
-          <option value="German">
+          <option>
             German
           </option>
 
-          <option value="Korean">
+          <option>
             Korean
           </option>
 
@@ -1174,10 +1061,10 @@ function openAnime(id) {
     </div>
 
 
-    <div class="player-buttons">
+    <div class="modal-actions">
 
       <button
-        class="watch-btn"
+        class="blue"
         onclick="loadSelectedVideo()">
 
         ▶ Load Video
@@ -1187,37 +1074,31 @@ function openAnime(id) {
 
       <a
         id="downloadBtn"
-        class="download-btn"
         href="#"
-        download
-        target="_blank">
+        target="_blank"
+        download>
 
-        ⬇ Download
+        Download
 
       </a>
 
     </div>
 
 
-    <div class="video-message">
+    <p style="
+      color:#6f839b;
+      font-size:13px;
+      margin-top:18px;
+    ">
 
       ${
-        firstVideo
-          ? "Video source available."
-          : `
-            <strong>
-              Video not connected yet.
-            </strong>
+        firstURL
+          ? "Video source connected."
+          : "No video URL connected yet. Add an authorized MP4 URL in VIDEO_URLS."
 
-            <br>
-
-            Add your authorized MP4
-            URL inside VIDEO_URLS
-            in script.js.
-          `
       }
 
-    </div>
+    </p>
 
   `;
 
@@ -1240,39 +1121,13 @@ function openAnime(id) {
   }
 
 
-  const audio =
-    $("audioSelect");
-
-  if (audio) {
-
-    audio.addEventListener(
-      "change",
-      loadSelectedAudio
-    );
-
-  }
-
-
-  const episode =
-    $("episodeSelect");
-
-  if (episode) {
-
-    episode.addEventListener(
-      "change",
-      loadSelectedVideo
-    );
-
-  }
-
-
   updateDownloadButton();
 
 }
 
 
 /* =========================
-   LOAD SELECTED VIDEO
+   LOAD VIDEO
 ========================= */
 
 function loadSelectedVideo() {
@@ -1280,17 +1135,14 @@ function loadSelectedVideo() {
   if (!currentAnimeId) return;
 
 
-  const qualityElement =
-    $("qualitySelect");
-
-  const episodeElement =
-    $("episodeSelect");
-
   const player =
     $("player");
 
   const source =
     $("videoSource");
+
+  const quality =
+    $("qualitySelect");
 
 
   if (
@@ -1299,39 +1151,27 @@ function loadSelectedVideo() {
   ) return;
 
 
-  const quality =
-    qualityElement
-      ? qualityElement.value
+  const selected =
+    quality
+      ? quality.value
       : "auto";
 
 
-  const episode =
-    episodeElement
-      ? episodeElement.value
-      : "1";
+  const urls =
+    VIDEO_URLS[currentAnimeId] ||
+    {};
 
 
-  const data =
-    VIDEO_URLS[currentAnimeId] || {};
-
-
-  let url =
-    data[quality] ||
-    data.auto ||
+  const url =
+    urls[selected] ||
+    urls.auto ||
     "";
-
-
-  /*
-    If you later create
-    episode-specific URLs,
-    you can use episode here.
-  */
 
 
   if (!url) {
 
     alert(
-      `No authorized video URL is configured for ${quality}, Episode ${episode}.`
+      `No video URL is configured for ${selected}.`
     );
 
     return;
@@ -1343,71 +1183,13 @@ function loadSelectedVideo() {
 
   player.load();
 
+
   player.play().catch(
     () => {}
   );
 
 
   updateDownloadButton();
-
-}
-
-
-/* =========================
-   AUDIO SWITCH
-========================= */
-
-function loadSelectedAudio() {
-
-  if (!currentAnimeId) return;
-
-
-  const audioSelect =
-    $("audioSelect");
-
-  if (!audioSelect) return;
-
-
-  const language =
-    audioSelect.value;
-
-
-  const data =
-    AUDIO_URLS[currentAnimeId] || {};
-
-
-  const audioURL =
-    data[language] || "";
-
-
-  if (!audioURL) {
-
-    if (language !== "Original") {
-
-      alert(
-        `${language} audio is not connected yet.`
-      );
-
-    }
-
-    return;
-  }
-
-
-  /*
-    Separate audio files are not
-    automatically synchronized with
-    the video by a normal <video>
-    element.
-
-    Use HLS/DASH for real
-    multi-audio switching.
-  */
-
-  alert(
-    `${language} audio URL is configured. For synchronized multi-language playback, use HLS/DASH.`
-  );
-
 }
 
 
@@ -1423,23 +1205,24 @@ function updateDownloadButton() {
   if (!button) return;
 
 
-  const data =
-    VIDEO_URLS[currentAnimeId] || {};
-
-
-  const qualityElement =
+  const quality =
     $("qualitySelect");
 
 
-  const quality =
-    qualityElement
-      ? qualityElement.value
+  const selected =
+    quality
+      ? quality.value
       : "auto";
 
 
+  const urls =
+    VIDEO_URLS[currentAnimeId] ||
+    {};
+
+
   const url =
-    data[quality] ||
-    data.auto ||
+    urls[selected] ||
+    urls.auto ||
     "";
 
 
@@ -1448,25 +1231,24 @@ function updateDownloadButton() {
     button.href =
       url;
 
-    button.style.pointerEvents =
-      "auto";
-
     button.style.opacity =
       "1";
+
+    button.style.pointerEvents =
+      "auto";
 
   } else {
 
     button.href =
       "#";
 
-    button.style.pointerEvents =
-      "none";
-
     button.style.opacity =
       "0.5";
 
-  }
+    button.style.pointerEvents =
+      "none";
 
+  }
 }
 
 
@@ -1482,15 +1264,13 @@ function closeModal() {
   const player =
     $("player");
 
-
   if (player) {
 
     try {
       player.pause();
-    } catch (error) {}
+    } catch (e) {}
 
   }
-
 
   if (modal) {
 
@@ -1500,15 +1280,18 @@ function closeModal() {
 
   }
 
-
   currentAnimeId =
     null;
-
 }
 
 
-/* =========================
+/* =====================================================
    LOGIN
+   ===================================================== */
+
+
+/* =========================
+   OPEN LOGIN
 ========================= */
 
 function openLogin() {
@@ -1519,41 +1302,36 @@ function openLogin() {
   const body =
     $("modalBody");
 
-
   if (!modal || !body) return;
 
 
   body.innerHTML = `
 
-    <div class="auth-box">
+    <div class="admin-panel">
 
       <h2>
-        🔐 NOX Anime Login
+        🔐 Login
       </h2>
 
-      <p>
-        Login to your NOX Anime account.
-      </p>
+
+      <div class="admin-row">
+
+        <input
+          id="loginUsername"
+          placeholder="Username"
+        >
 
 
-      <input
-        id="loginUsername"
-        type="text"
-        placeholder="Username"
-        autocomplete="username"
-      >
+        <input
+          id="loginPassword"
+          type="password"
+          placeholder="Password"
+        >
 
-
-      <input
-        id="loginPassword"
-        type="password"
-        placeholder="Password"
-        autocomplete="current-password"
-      >
+      </div>
 
 
       <button
-        class="watch-btn"
         onclick="loginUser()">
 
         Login
@@ -1562,18 +1340,22 @@ function openLogin() {
 
 
       <button
-        class="secondary-btn"
-        onclick="openSignup()">
+        onclick="openSignup()"
+        style="
+          margin-left:8px;
+          background:#0b1a2d;
+          border:1px solid #23425f;
+        ">
 
-        Create Account
+        Sign Up
 
       </button>
 
 
-      <div
+      <p
         id="loginMessage"
-        class="auth-message">
-      </div>
+        style="color:#ff6575">
+      </p>
 
     </div>
 
@@ -1583,7 +1365,6 @@ function openLogin() {
   modal.classList.remove(
     "hidden"
   );
-
 }
 
 
@@ -1595,46 +1376,30 @@ function loginUser() {
 
   const username =
     $("loginUsername")
-      ?.value
-      .trim();
-
+      ?.value.trim();
 
   const password =
     $("loginPassword")
       ?.value;
 
 
-  const message =
-    $("loginMessage");
-
-
-  if (!username || !password) {
-
-    if (message) {
-
-      message.textContent =
-        "Please enter username and password.";
-
-    }
-
-    return;
-  }
-
-
   const user =
     users.find(
-      item =>
-        item.username === username &&
-        item.password === password
+      x =>
+        x.username === username &&
+        x.password === password
     );
 
 
   if (!user) {
 
-    if (message) {
+    const msg =
+      $("loginMessage");
 
-      message.textContent =
-        "❌ Invalid username or password.";
+    if (msg) {
+
+      msg.textContent =
+        "❌ Wrong username or password.";
 
     }
 
@@ -1656,11 +1421,9 @@ function loginUser() {
 
   render();
 
-
   alert(
     `Welcome ${user.username}!`
   );
-
 }
 
 
@@ -1678,29 +1441,31 @@ function openSignup() {
 
   body.innerHTML = `
 
-    <div class="auth-box">
+    <div class="admin-panel">
 
       <h2>
         ✨ Create Account
       </h2>
 
 
-      <input
-        id="signupUsername"
-        type="text"
-        placeholder="Username"
-      >
+      <div class="admin-row">
+
+        <input
+          id="signupUsername"
+          placeholder="Username"
+        >
 
 
-      <input
-        id="signupPassword"
-        type="password"
-        placeholder="Password"
-      >
+        <input
+          id="signupPassword"
+          type="password"
+          placeholder="Password"
+        >
+
+      </div>
 
 
       <button
-        class="watch-btn"
         onclick="signupUser()">
 
         Create Account
@@ -1709,18 +1474,21 @@ function openSignup() {
 
 
       <button
-        class="secondary-btn"
-        onclick="openLogin()">
+        onclick="openLogin()"
+        style="
+          margin-left:8px;
+          background:#0b1a2d;
+        ">
 
-        Back to Login
+        Back
 
       </button>
 
 
-      <div
+      <p
         id="signupMessage"
-        class="auth-message">
-      </div>
+        style="color:#ff6575">
+      </p>
 
     </div>
 
@@ -1730,24 +1498,18 @@ function openSignup() {
 
 
 /* =========================
-   CREATE USER
+   SIGNUP USER
 ========================= */
 
 function signupUser() {
 
   const username =
     $("signupUsername")
-      ?.value
-      .trim();
-
+      ?.value.trim();
 
   const password =
     $("signupPassword")
       ?.value;
-
-
-  const message =
-    $("signupMessage");
 
 
   if (
@@ -1755,12 +1517,8 @@ function signupUser() {
     !password
   ) {
 
-    if (message) {
-
-      message.textContent =
-        "Please fill all fields.";
-
-    }
+    $("signupMessage").textContent =
+      "Please fill all fields.";
 
     return;
   }
@@ -1768,25 +1526,8 @@ function signupUser() {
 
   if (username.length < 3) {
 
-    if (message) {
-
-      message.textContent =
-        "Username must be at least 3 characters.";
-
-    }
-
-    return;
-  }
-
-
-  if (password.length < 4) {
-
-    if (message) {
-
-      message.textContent =
-        "Password must be at least 4 characters.";
-
-    }
+    $("signupMessage").textContent =
+      "Username must be at least 3 characters.";
 
     return;
   }
@@ -1794,20 +1535,16 @@ function signupUser() {
 
   const exists =
     users.some(
-      user =>
-        user.username.toLowerCase() ===
+      x =>
+        x.username.toLowerCase() ===
         username.toLowerCase()
     );
 
 
   if (exists) {
 
-    if (message) {
-
-      message.textContent =
-        "Username already exists.";
-
-    }
+    $("signupMessage").textContent =
+      "Username already exists.";
 
     return;
   }
@@ -1822,7 +1559,10 @@ function signupUser() {
   });
 
 
-  saveUsers();
+  save(
+    USERS_KEY,
+    users
+  );
 
 
   currentUser =
@@ -1839,16 +1579,14 @@ function signupUser() {
 
   render();
 
-
   alert(
-    "✅ Account created successfully!"
+    "✅ Account created!"
   );
-
 }
 
 
 /* =========================
-   LOGIN BUTTON
+   LOGIN BUTTON TEXT
 ========================= */
 
 function updateLoginButton() {
@@ -1859,26 +1597,20 @@ function updateLoginButton() {
   if (!button) return;
 
 
-  if (
-    currentUser &&
+  button.textContent =
     currentUser !== "Guest"
-  ) {
-
-    button.textContent =
-      currentUser;
-
-  } else {
-
-    button.textContent =
-      "Login";
-
-  }
-
+      ? currentUser
+      : "Login";
 }
 
 
+/* =====================================================
+   ADMIN
+   ===================================================== */
+
+
 /* =========================
-   ADMIN PANEL
+   OPEN ADMIN LOGIN
 ========================= */
 
 function openAdmin() {
@@ -1889,39 +1621,36 @@ function openAdmin() {
   const body =
     $("modalBody");
 
-
   if (!modal || !body) return;
 
 
   body.innerHTML = `
 
-    <div class="auth-box">
+    <div class="admin-panel">
 
       <h2>
-        🛡️ NOX Admin
+        🛡️ Admin Login
       </h2>
 
-      <p>
-        Enter admin credentials.
-      </p>
+
+      <div class="admin-row">
+
+        <input
+          id="adminUsername"
+          placeholder="Admin username"
+        >
 
 
-      <input
-        id="adminUsername"
-        type="text"
-        placeholder="Admin username"
-      >
+        <input
+          id="adminPassword"
+          type="password"
+          placeholder="Admin password"
+        >
 
-
-      <input
-        id="adminPassword"
-        type="password"
-        placeholder="Admin password"
-      >
+      </div>
 
 
       <button
-        class="watch-btn"
         onclick="adminLogin()">
 
         Open Admin Panel
@@ -1929,10 +1658,10 @@ function openAdmin() {
       </button>
 
 
-      <div
+      <p
         id="adminMessage"
-        class="auth-message">
-      </div>
+        style="color:#ff6575">
+      </p>
 
     </div>
 
@@ -1942,7 +1671,6 @@ function openAdmin() {
   modal.classList.remove(
     "hidden"
   );
-
 }
 
 
@@ -1954,53 +1682,50 @@ function adminLogin() {
 
   const username =
     $("adminUsername")
-      ?.value
-      .trim();
-
+      ?.value.trim();
 
   const password =
     $("adminPassword")
       ?.value;
 
 
-  const message =
-    $("adminMessage");
-
-
-  const admin =
+  const user =
     users.find(
-      user =>
+      x =>
         (
-          user.role === "admin" ||
-          user.role === "super"
+          x.role === "admin" ||
+          x.role === "super"
         ) &&
-        user.username === username &&
-        user.password === password
+        x.username === username &&
+        x.password === password
     );
 
 
-  if (!admin) {
+  if (!user) {
 
-    if (message) {
-
-      message.textContent =
-        "❌ Invalid admin credentials.";
-
-    }
+    $("adminMessage").textContent =
+      "❌ Invalid admin login.";
 
     return;
   }
 
 
-  closeModal();
+  currentUser =
+    user.username;
+
+
+  localStorage.setItem(
+    CURRENT_USER_KEY,
+    currentUser
+  );
+
 
   openAdminPanel();
-
 }
 
 
 /* =========================
-   ADMIN PANEL UI
+   ADMIN PANEL
 ========================= */
 
 function openAdminPanel() {
@@ -2011,16 +1736,19 @@ function openAdminPanel() {
   const body =
     $("modalBody");
 
-
   if (!modal || !body) return;
 
 
-  const isSuper =
-    users.some(
-      user =>
-        user.username === currentUser &&
-        user.role === "super"
+  const current =
+    users.find(
+      x =>
+        x.username === currentUser
     );
+
+
+  const isSuper =
+    current &&
+    current.role === "super";
 
 
   body.innerHTML = `
@@ -2031,8 +1759,9 @@ function openAdminPanel() {
         🛡️ NOX Admin Panel
       </h2>
 
+
       <p>
-        Logged in as:
+        Logged in:
         <strong>
           ${escapeHTML(currentUser)}
         </strong>
@@ -2047,80 +1776,61 @@ function openAdminPanel() {
       </h3>
 
 
-      <input
-        id="newAnimeName"
-        type="text"
-        placeholder="Anime name"
-      >
-
-
-      <input
-        id="newAnimeGenre"
-        type="text"
-        placeholder="Genre"
-      >
-
-
-      <input
-        id="newAnimeYear"
-        type="number"
-        placeholder="Year"
-      >
-
-
-      <input
-        id="newAnimeRating"
-        type="text"
-        placeholder="Rating"
-      >
-
-
-      <input
-        id="newAnimePoster"
-        type="text"
-        placeholder="Poster filename e.g. slime-s4.jpg"
-        value="slime-s4.jpg"
-      >
-
-
-      <label class="check-row">
+      <div class="admin-row">
 
         <input
-          id="newAnimeTrending"
-          type="checkbox"
+          id="newAnimeName"
+          placeholder="Anime name"
         >
-
-        Trending
-
-      </label>
-
-
-      <label class="check-row">
 
         <input
-          id="newAnimeLatest"
-          type="checkbox"
+          id="newAnimeGenre"
+          placeholder="Genre"
         >
 
-        Latest
-
-      </label>
+      </div>
 
 
-      <label class="check-row">
+      <div class="admin-row">
 
         <input
-          id="newAnimePremium"
-          type="checkbox"
+          id="newAnimeYear"
+          type="number"
+          placeholder="Year"
         >
 
-        Premium
+        <input
+          id="newAnimeRating"
+          placeholder="Rating"
+        >
 
-      </label>
+      </div>
+
+
+      <div class="admin-row">
+
+        <input
+          id="newAnimePoster"
+          value="slime-s4.jpg"
+          placeholder="Poster filename"
+        >
+
+        <select id="newAnimePremium">
+
+          <option value="false">
+            Free
+          </option>
+
+          <option value="true">
+            Premium
+          </option>
+
+        </select>
+
+      </div>
 
 
       <button
-        class="watch-btn"
         onclick="addAnime()">
 
         + Add Anime
@@ -2132,13 +1842,33 @@ function openAdminPanel() {
 
 
       <h3>
-        📚 Anime Management
+        📚 Anime List
       </h3>
 
 
-      <div id="adminAnimeList">
+      <div class="admin-list">
 
-        ${renderAdminAnimeList()}
+        ${anime.map(item => `
+
+          <div class="admin-item">
+
+            <span>
+              ${escapeHTML(item.name)}
+            </span>
+
+            <button
+              onclick="deleteAnime(${item.id})"
+              style="
+                background:#b9273d;
+              ">
+
+              Delete
+
+            </button>
+
+          </div>
+
+        `).join("")}
 
       </div>
 
@@ -2153,28 +1883,67 @@ function openAdminPanel() {
               👑 Admin Management
             </h3>
 
-            <input
-              id="newAdminUsername"
-              type="text"
-              placeholder="New admin username"
-            >
 
-            <input
-              id="newAdminPassword"
-              type="password"
-              placeholder="New admin password"
-            >
+            <div class="admin-row">
+
+              <input
+                id="newAdminUsername"
+                placeholder="Admin username"
+              >
+
+              <input
+                id="newAdminPassword"
+                type="password"
+                placeholder="Admin password"
+              >
+
+            </div>
+
 
             <button
-              class="watch-btn"
               onclick="addAdmin()">
 
               + Add Admin
 
             </button>
 
-            <div id="adminUsersList">
-              ${renderAdminUsers()}
+
+            <div class="admin-list">
+
+              ${users
+                .filter(
+                  x =>
+                    x.role === "admin" ||
+                    x.role === "super"
+                )
+                .map(user => `
+
+                  <div class="admin-item">
+
+                    <span>
+                      ${escapeHTML(user.username)}
+                      —
+                      ${user.role}
+                    </span>
+
+                    ${
+                      user.role === "super"
+                        ? `<span>👑 Protected</span>`
+                        : `
+                          <button
+                            onclick="deleteAdmin('${escapeHTML(user.username)}')"
+                            style="
+                              background:#b9273d;
+                            ">
+                            Remove
+                          </button>
+                        `
+                    }
+
+                  </div>
+
+                `).join("")}
+
             </div>
 
           `
@@ -2189,47 +1958,6 @@ function openAdminPanel() {
   modal.classList.remove(
     "hidden"
   );
-
-}
-
-
-/* =========================
-   ADMIN ANIME LIST
-========================= */
-
-function renderAdminAnimeList() {
-
-  return anime.map(item => `
-
-    <div class="admin-item">
-
-      <div>
-
-        <strong>
-          ${escapeHTML(item.name)}
-        </strong>
-
-        <small>
-          ${escapeHTML(item.genre)}
-          •
-          ${item.year}
-        </small>
-
-      </div>
-
-
-      <button
-        class="danger-btn"
-        onclick="deleteAnime(${item.id})">
-
-        Delete
-
-      </button>
-
-    </div>
-
-  `).join("");
-
 }
 
 
@@ -2241,54 +1969,48 @@ function addAnime() {
 
   const name =
     $("newAnimeName")
-      ?.value
-      .trim();
-
+      ?.value.trim();
 
   const genre =
     $("newAnimeGenre")
-      ?.value
-      .trim();
-
+      ?.value.trim();
 
   const year =
     Number(
       $("newAnimeYear")
         ?.value
-    );
-
+    ) || new Date().getFullYear();
 
   const rating =
     $("newAnimeRating")
-      ?.value
-      .trim();
-
+      ?.value.trim() ||
+    "N/A";
 
   const poster =
     $("newAnimePoster")
-      ?.value
-      .trim() ||
+      ?.value.trim() ||
     "slime-s4.jpg";
 
+  const premium =
+    $("newAnimePremium")
+      ?.value === "true";
 
-  if (
-    !name ||
-    !genre
-  ) {
+
+  if (!name || !genre) {
 
     alert(
-      "Anime name and genre are required."
+      "Anime name and genre required."
     );
 
     return;
   }
 
 
-  const newId =
+  const id =
     anime.length
       ? Math.max(
           ...anime.map(
-            item => Number(item.id)
+            x => Number(x.id)
           )
         ) + 1
       : 1;
@@ -2296,46 +2018,42 @@ function addAnime() {
 
   anime.push({
 
-    id: newId,
+    id,
 
     name,
 
     genre,
 
-    year:
-      year || new Date().getFullYear(),
+    year,
 
-    season:
-      "Season 1",
+    season: "Season 1",
 
-    rating:
-      rating || "N/A",
+    rating,
 
     poster,
 
-    trending:
-      $("newAnimeTrending")?.checked || false,
+    trending: false,
 
-    latest:
-      $("newAnimeLatest")?.checked || false,
+    latest: true,
 
-    premium:
-      $("newAnimePremium")?.checked || false
+    premium
 
   });
 
 
-  saveAnime();
+  save(
+    ANIME_KEY,
+    anime
+  );
+
 
   render();
 
   openAdminPanel();
 
-
   alert(
-    "✅ Anime added successfully!"
+    "✅ Anime added!"
   );
-
 }
 
 
@@ -2350,7 +2068,7 @@ function deleteAnime(id) {
 
   const item =
     anime.find(
-      a => Number(a.id) === id
+      x => Number(x.id) === id
     );
 
 
@@ -2359,32 +2077,41 @@ function deleteAnime(id) {
 
   if (
     !confirm(
-      `Delete "${item.name}"?`
+      `Delete ${item.name}?`
     )
-  ) return;
+  ) {
+    return;
+  }
 
 
   anime =
     anime.filter(
-      a => Number(a.id) !== id
+      x =>
+        Number(x.id) !== id
     );
 
 
   watchlist =
     watchlist.filter(
-      itemId =>
-        Number(itemId) !== id
+      x =>
+        Number(x) !== id
     );
 
 
-  saveAnime();
+  save(
+    ANIME_KEY,
+    anime
+  );
 
-  saveWatchlist();
+  save(
+    WATCH_KEY,
+    watchlist
+  );
+
 
   render();
 
   openAdminPanel();
-
 }
 
 
@@ -2396,8 +2123,8 @@ function addAdmin() {
 
   const current =
     users.find(
-      user =>
-        user.username === currentUser
+      x =>
+        x.username === currentUser
     );
 
 
@@ -2416,22 +2143,17 @@ function addAdmin() {
 
   const username =
     $("newAdminUsername")
-      ?.value
-      .trim();
-
+      ?.value.trim();
 
   const password =
     $("newAdminPassword")
       ?.value;
 
 
-  if (
-    !username ||
-    !password
-  ) {
+  if (!username || !password) {
 
     alert(
-      "Enter admin username and password."
+      "Enter username and password."
     );
 
     return;
@@ -2440,8 +2162,8 @@ function addAdmin() {
 
   const exists =
     users.some(
-      user =>
-        user.username.toLowerCase() ===
+      x =>
+        x.username.toLowerCase() ===
         username.toLowerCase()
     );
 
@@ -2467,74 +2189,17 @@ function addAdmin() {
   });
 
 
-  saveUsers();
+  save(
+    USERS_KEY,
+    users
+  );
+
 
   openAdminPanel();
 
-
   alert(
-    "✅ Admin added successfully!"
+    "✅ Admin added!"
   );
-
-}
-
-
-/* =========================
-   ADMIN USERS
-========================= */
-
-function renderAdminUsers() {
-
-  return users
-    .filter(
-      user =>
-        user.role === "admin" ||
-        user.role === "super"
-    )
-    .map(user => {
-
-      const protectedUser =
-        user.role === "super";
-
-
-      return `
-
-        <div class="admin-item">
-
-          <div>
-
-            <strong>
-              ${escapeHTML(user.username)}
-            </strong>
-
-            <small>
-              ${user.role}
-            </small>
-
-          </div>
-
-
-          ${
-            protectedUser
-              ? `<span>👑 Protected</span>`
-              : `
-                <button
-                  class="danger-btn"
-                  onclick="deleteAdmin('${escapeAttribute(user.username)}')">
-
-                  Remove
-
-                </button>
-              `
-          }
-
-        </div>
-
-      `;
-
-    })
-    .join("");
-
 }
 
 
@@ -2546,8 +2211,8 @@ function deleteAdmin(username) {
 
   const current =
     users.find(
-      user =>
-        user.username === currentUser
+      x =>
+        x.username === currentUser
     );
 
 
@@ -2566,15 +2231,17 @@ function deleteAdmin(username) {
 
   const target =
     users.find(
-      user =>
-        user.username === username
+      x =>
+        x.username === username
     );
 
 
   if (!target) return;
 
 
-  if (target.role === "super") {
+  if (
+    target.role === "super"
+  ) {
 
     alert(
       "❌ Super Admin cannot be removed."
@@ -2586,79 +2253,33 @@ function deleteAdmin(username) {
 
   if (
     !confirm(
-      `Remove admin "${username}"?`
+      `Remove ${username}?`
     )
-  ) return;
+  ) {
+    return;
+  }
 
 
   users =
     users.filter(
-      user =>
-        user.username !== username
+      x =>
+        x.username !== username
     );
 
 
-  saveUsers();
-
-  openAdminPanel();
-
-
-  alert(
-    "Admin removed."
+  save(
+    USERS_KEY,
+    users
   );
 
+
+  openAdminPanel();
 }
 
 
-/* =========================
-   ESCAPE HTML
-========================= */
-
-function escapeHTML(value) {
-
-  return String(value)
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-    .replace(
-      /</g,
-      "&lt;"
-    )
-    .replace(
-      />/g,
-      "&gt;"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-    .replace(
-      /'/g,
-      "&#039;"
-    );
-
-}
-
-
-function escapeAttribute(value) {
-
-  return String(value)
-    .replace(
-      /'/g,
-      "\\'"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    );
-
-}
-
-
-/* =========================
-   MODAL BACKDROP
-========================= */
+/* =====================================================
+   MODAL
+   ===================================================== */
 
 document.addEventListener(
   "click",
@@ -2680,10 +2301,6 @@ document.addEventListener(
 );
 
 
-/* =========================
-   KEYBOARD
-========================= */
-
 document.addEventListener(
   "keydown",
   function(event) {
@@ -2700,9 +2317,9 @@ document.addEventListener(
 );
 
 
-/* =========================
-   START NOX
-========================= */
+/* =====================================================
+   START
+   ===================================================== */
 
 function startNOX() {
 
@@ -2739,7 +2356,6 @@ function startNOX() {
     const search =
       $("search");
 
-
     if (search) {
 
       search.addEventListener(
@@ -2750,13 +2366,12 @@ function startNOX() {
     }
 
 
-    const dailyBtn =
+    const daily =
       $("dailyBtn");
 
+    if (daily) {
 
-    if (dailyBtn) {
-
-      dailyBtn.addEventListener(
+      daily.addEventListener(
         "click",
         claimDaily
       );
@@ -2764,13 +2379,12 @@ function startNOX() {
     }
 
 
-    const loginBtn =
+    const login =
       $("loginBtn");
 
+    if (login) {
 
-    if (loginBtn) {
-
-      loginBtn.addEventListener(
+      login.addEventListener(
         "click",
         openLogin
       );
@@ -2778,13 +2392,12 @@ function startNOX() {
     }
 
 
-    const adminBtn =
+    const admin =
       $("adminBtn");
 
+    if (admin) {
 
-    if (adminBtn) {
-
-      adminBtn.addEventListener(
+      admin.addEventListener(
         "click",
         openAdmin
       );
@@ -2793,15 +2406,13 @@ function startNOX() {
 
 
     console.log(
-      "NOX Anime started successfully."
+      "NOX Anime loaded successfully."
     );
 
-  }
-
-  catch (error) {
+  } catch (error) {
 
     console.error(
-      "NOX Anime Error:",
+      "NOX ERROR:",
       error
     );
 
@@ -2814,46 +2425,40 @@ function startNOX() {
 
       loader.innerHTML = `
 
-        <div
-          style="
-            text-align:center;
-            padding:30px;
-          "
-        >
+        <div style="
+          text-align:center;
+          padding:30px;
+        ">
 
-          <div
-            style="
-              font-size:40px;
-              margin-bottom:15px;
-            "
-          >
+          <div style="
+            font-size:45px;
+          ">
             ⚠️
           </div>
-
 
           <h2>
             NOX Anime Error
           </h2>
 
-
-          <p>
-            Something went wrong.
+          <p style="
+            color:#8fa3bd;
+          ">
+            ${escapeHTML(error.message)}
           </p>
-
 
           <button
             onclick="location.reload()"
             style="
-              padding:12px 22px;
+              padding:12px 25px;
               border:0;
               border-radius:10px;
               background:#168cff;
               color:white;
               font-size:16px;
-              cursor:pointer;
-            "
-          >
+            ">
+
             Refresh
+
           </button>
 
         </div>
@@ -2868,7 +2473,7 @@ function startNOX() {
 
 
 /* =========================
-   PAGE LOAD
+   RUN
 ========================= */
 
 if (
