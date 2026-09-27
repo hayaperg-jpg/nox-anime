@@ -1,43 +1,53 @@
 /* =========================================================
-   NOX ANIME - COMPLETE SCRIPT.JS
+   NOX ANIME - COMPLETE FIXED SCRIPT.JS
    ========================================================= */
 
 "use strict";
 
+
 /* =========================================================
    HELPERS
-   ========================================================= */
+========================================================= */
 
 const $ = (id) => document.getElementById(id);
 
 function save(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
-  } catch (e) {
-    console.error("Save error:", e);
+  } catch (error) {
+    console.error("Save error:", error);
   }
 }
 
 function load(key, fallback) {
   try {
     const value = localStorage.getItem(key);
-    return value === null ? fallback : JSON.parse(value);
-  } catch (e) {
-    console.error("Load error:", e);
+
+    if (value === null) {
+      return fallback;
+    }
+
+    return JSON.parse(value);
+
+  } catch (error) {
+    console.error("Load error:", error);
     return fallback;
   }
 }
 
 function escapeHTML(value) {
+
   return String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+
 }
 
 function todayKey() {
+
   const d = new Date();
 
   return [
@@ -45,17 +55,23 @@ function todayKey() {
     String(d.getMonth() + 1).padStart(2, "0"),
     String(d.getDate()).padStart(2, "0")
   ].join("-");
+
 }
 
 function formatDate(timestamp) {
-  if (!timestamp) return "";
+
+  if (!timestamp) {
+    return "";
+  }
 
   return new Date(timestamp).toLocaleDateString();
+
 }
+
 
 /* =========================================================
    STORAGE KEYS
-   ========================================================= */
+========================================================= */
 
 const COINS_KEY = "nox_coins";
 const WATCH_KEY = "nox_watchlist";
@@ -65,27 +81,47 @@ const DAILY_KEY = "nox_daily";
 const CURRENT_USER_KEY = "nox_current_user";
 const ANIME_KEY = "nox_anime";
 
+
 /* =========================================================
    POSTERS
-   ========================================================= */
+========================================================= */
 
 const POSTERS = {
-  "That Time I Got Reincarnated as a Slime": "slime-s4.jpg",
-  "One Piece": "onepiece.jpg",
-  "Jujutsu Kaisen": "jjk.jpg",
-  "Demon Slayer": "demonslayer.jpg",
-  "Attack on Titan": "aot.jpg",
-  "Chainsaw Man": "chainsawman.jpg",
-  "Death Note": "deathnote.jpg"
+
+  "That Time I Got Reincarnated as a Slime":
+    "slime-s4.jpg",
+
+  "One Piece":
+    "onepiece.jpg",
+
+  "Jujutsu Kaisen":
+    "jjk.jpg",
+
+  "Demon Slayer":
+    "demonslayer.jpg",
+
+  "Attack on Titan":
+    "aot.jpg",
+
+  "Chainsaw Man":
+    "chainsawman.jpg",
+
+  "Death Note":
+    "deathnote.jpg"
+
 };
 
+
 function getPoster(name) {
+
   return POSTERS[name] || "slime-s4.jpg";
+
 }
+
 
 /* =========================================================
    DEFAULT ANIME
-   ========================================================= */
+========================================================= */
 
 const defaultAnime = [
 
@@ -371,18 +407,25 @@ const defaultAnime = [
 
 ];
 
+
 /* =========================================================
    VIDEO SOURCES
-   ========================================================= */
+========================================================= */
 
 /*
-   Add your own authorized video URLs here.
+   IMPORTANT:
+
+   Yahan sirf apni / authorized video URLs lagao.
 
    Example:
 
-   "720p": "https://your-authorized-video-url.mp4"
+   1: {
+     auto: "https://example.com/video.mp4",
+     "720p": "https://example.com/video-720.mp4",
+     "1080p": "https://example.com/video-1080.mp4"
+   }
 
-   Empty URLs are intentionally left blank.
+   Empty URLs ka matlab video configured nahi hai.
 */
 
 const VIDEO_URLS = {
@@ -409,13 +452,30 @@ const VIDEO_URLS = {
     "1080p": "",
     "1440p": "",
     "4k": ""
+  },
+
+  4: {
+    auto: "",
+    "720p": "",
+    "1080p": "",
+    "1440p": "",
+    "4k": ""
+  },
+
+  5: {
+    auto: "",
+    "720p": "",
+    "1080p": "",
+    "1440p": "",
+    "4k": ""
   }
 
 };
 
+
 /* =========================================================
-   AUDIO / LANGUAGE OPTIONS
-   ========================================================= */
+   LANGUAGES
+========================================================= */
 
 const LANGUAGES = [
   "Original",
@@ -428,6 +488,11 @@ const LANGUAGES = [
   "Korean"
 ];
 
+
+/* =========================================================
+   QUALITIES
+========================================================= */
+
 const QUALITIES = [
   "Auto",
   "720p",
@@ -436,79 +501,191 @@ const QUALITIES = [
   "4K"
 ];
 
+
 /* =========================================================
    STATE
-   ========================================================= */
+========================================================= */
 
-let anime = load(ANIME_KEY, null);
+let anime = load(
+  ANIME_KEY,
+  null
+);
 
-if (!Array.isArray(anime) || anime.length === 0) {
-  anime = defaultAnime.map(item => ({ ...item }));
+
+/* =========================================================
+   INITIAL ANIME
+========================================================= */
+
+if (
+  !Array.isArray(anime) ||
+  anime.length === 0
+) {
+
+  anime =
+    defaultAnime.map(
+      item => ({ ...item })
+    );
+
 } else {
 
-  anime = anime.map((item, index) => {
+  anime =
+    anime.map(
+      (item, index) => {
 
-    const copy = {
-      ...item
-    };
+        const copy = {
+          ...item
+        };
 
-    if (!copy.id) {
-      copy.id = index + 1;
-    }
+        if (!copy.id) {
+          copy.id = index + 1;
+        }
 
-    if (!copy.name && copy.title) {
-      copy.name = copy.title;
-    }
+        if (!copy.name && copy.title) {
+          copy.name = copy.title;
+        }
 
-    if (!copy.title && copy.name) {
-      copy.title = copy.name;
-    }
+        if (!copy.title && copy.name) {
+          copy.title = copy.name;
+        }
 
-    if (POSTERS[copy.name]) {
-      copy.poster = POSTERS[copy.name];
-    }
+        if (!copy.poster) {
+          copy.poster =
+            getPoster(copy.name);
+        }
 
-    return copy;
+        if (POSTERS[copy.name]) {
+          copy.poster =
+            POSTERS[copy.name];
+        }
 
-  });
+        return copy;
+
+      }
+    );
 
 }
 
-/*
-   Force the six uploaded posters.
-*/
+
+/* =========================================================
+   FORCE CORRECT POSTERS
+========================================================= */
 
 anime.forEach(item => {
 
   if (POSTERS[item.name]) {
-    item.poster = POSTERS[item.name];
+
+    item.poster =
+      POSTERS[item.name];
+
   }
 
 });
 
-save(ANIME_KEY, anime);
 
-let coins = Number(load(COINS_KEY, 0)) || 0;
+save(
+  ANIME_KEY,
+  anime
+);
 
-let watchlist = load(WATCH_KEY, []);
+
+/* =========================================================
+   COINS
+========================================================= */
+
+let coinsStored =
+  load(
+    COINS_KEY,
+    null
+  );
+
+let coins;
+
+if (coinsStored === null) {
+
+  coins = 10;
+
+  save(
+    COINS_KEY,
+    coins
+  );
+
+} else {
+
+  coins =
+    Number(coinsStored);
+
+  if (!Number.isFinite(coins)) {
+    coins = 10;
+  }
+
+}
+
+
+/* =========================================================
+   WATCHLIST
+========================================================= */
+
+let watchlist =
+  load(
+    WATCH_KEY,
+    []
+  );
 
 if (!Array.isArray(watchlist)) {
   watchlist = [];
 }
 
-let premiumUntil = Number(load(PREMIUM_KEY, 0)) || 0;
-
-let dailyClaimed = load(DAILY_KEY, "");
-
-let currentUser = load(CURRENT_USER_KEY, null);
-
-let users = load(USERS_KEY, null);
 
 /* =========================================================
-   DEFAULT USERS
-   ========================================================= */
+   PREMIUM
+========================================================= */
 
-if (!Array.isArray(users) || users.length === 0) {
+let premiumUntil =
+  Number(
+    load(
+      PREMIUM_KEY,
+      0
+    )
+  ) || 0;
+
+
+/* =========================================================
+   DAILY
+========================================================= */
+
+let dailyClaimed =
+  load(
+    DAILY_KEY,
+    ""
+  );
+
+
+/* =========================================================
+   CURRENT USER
+========================================================= */
+
+let currentUser =
+  load(
+    CURRENT_USER_KEY,
+    null
+  );
+
+
+/* =========================================================
+   USERS
+========================================================= */
+
+let users =
+  load(
+    USERS_KEY,
+    null
+  );
+
+
+if (
+  !Array.isArray(users) ||
+  users.length === 0
+) {
 
   users = [
 
@@ -526,124 +703,196 @@ if (!Array.isArray(users) || users.length === 0) {
 
   ];
 
-  save(USERS_KEY, users);
+  save(
+    USERS_KEY,
+    users
+  );
 
 }
 
+
 /* =========================================================
-   BASIC STATE FUNCTIONS
-   ========================================================= */
+   SAVE STATE
+========================================================= */
 
 function saveState() {
 
-  save(COINS_KEY, coins);
-  save(WATCH_KEY, watchlist);
-  save(PREMIUM_KEY, premiumUntil);
-  save(DAILY_KEY, dailyClaimed);
-  save(CURRENT_USER_KEY, currentUser);
-  save(USERS_KEY, users);
-  save(ANIME_KEY, anime);
+  save(
+    COINS_KEY,
+    coins
+  );
+
+  save(
+    WATCH_KEY,
+    watchlist
+  );
+
+  save(
+    PREMIUM_KEY,
+    premiumUntil
+  );
+
+  save(
+    DAILY_KEY,
+    dailyClaimed
+  );
+
+  save(
+    CURRENT_USER_KEY,
+    currentUser
+  );
+
+  save(
+    USERS_KEY,
+    users
+  );
+
+  save(
+    ANIME_KEY,
+    anime
+  );
 
 }
+
+
+/* =========================================================
+   PREMIUM CHECK
+========================================================= */
 
 function isPremium() {
 
-  return premiumUntil > Date.now();
+  return premiumUntil >
+    Date.now();
 
 }
 
-function getCurrentUser() {
-
-  return currentUser;
-
-}
 
 /* =========================================================
-   UI UPDATE
-   ========================================================= */
+   UPDATE COINS
+========================================================= */
 
 function updateCoins() {
 
-  const elements = document.querySelectorAll(
-    "[data-coins], #coins"
-  );
+  const elements =
+    document.querySelectorAll(
+      "#coins, [data-coins]"
+    );
 
-  elements.forEach(el => {
-    el.textContent = coins;
-  });
+  elements.forEach(
+    element => {
+      element.textContent =
+        coins;
+    }
+  );
 
 }
 
+
+/* =========================================================
+   UPDATE PREMIUM
+========================================================= */
+
 function updatePremium() {
 
-  const el = $("premiumStatus");
+  const status =
+    $("premiumStatus");
 
-  if (!el) return;
+  if (!status) {
+    return;
+  }
 
   if (isPremium()) {
 
-    el.innerHTML =
-      "👑 Premium Active<br>" +
-      "<small>Until " +
-      escapeHTML(formatDate(premiumUntil)) +
-      "</small>";
+    status.innerHTML = `
+      👑 Premium Active
+      <br>
+      <small>
+        Until ${escapeHTML(
+          formatDate(premiumUntil)
+        )}
+      </small>
+    `;
 
   } else {
 
-    el.innerHTML =
+    status.innerHTML =
       "Free Plan";
 
   }
 
 }
 
+
+/* =========================================================
+   LOGIN BUTTON
+========================================================= */
+
 function updateLoginButton() {
 
-  const btn = $("loginBtn");
+  const button =
+    $("loginBtn");
 
-  if (!btn) return;
+  if (!button) {
+    return;
+  }
 
   if (currentUser) {
 
-    btn.textContent =
-      currentUser.username || "Account";
+    button.textContent =
+      currentUser.username ||
+      "Account";
 
   } else {
 
-    btn.textContent = "Login";
+    button.textContent =
+      "Login";
 
   }
 
 }
+
 
 /* =========================================================
    LOADER
-   ========================================================= */
+========================================================= */
 
 function hideLoader() {
 
-  const loader = $("loader");
-  const app = $("app");
+  const loader =
+    $("loader");
+
+  const app =
+    $("app");
 
   if (loader) {
-    loader.classList.add("hidden");
+    loader.classList.add(
+      "hidden"
+    );
   }
 
   if (app) {
-    app.classList.remove("hidden");
+    app.classList.remove(
+      "hidden"
+    );
   }
 
 }
 
+
 /* =========================================================
    ANIME CARD
-   ========================================================= */
+========================================================= */
 
 function animeCard(item) {
 
-  const inWatchlist =
-    watchlist.includes(item.id) ||
-    watchlist.includes(String(item.id));
+  const id =
+    Number(item.id);
+
+  const saved =
+    watchlist.some(
+      savedId =>
+        Number(savedId) === id
+    );
 
   const poster =
     item.poster ||
@@ -651,53 +900,79 @@ function animeCard(item) {
 
   return `
 
-    <article class="anime-card">
+    <article
+      class="anime-card"
+    >
 
       <div
         class="anime-poster"
-        onclick="openAnime(${Number(item.id)})"
-        style="
-          background-image:
-          linear-gradient(
-            to top,
-            rgba(3,8,20,.95),
-            rgba(3,8,20,.05)
-          ),
-          url('${escapeHTML(poster)}');
-        "
+        onclick="openAnime(${id})"
       >
 
-        <div class="poster-info">
+        <img
+          src="${escapeHTML(poster)}"
+          alt="${escapeHTML(item.name)}"
+          class="poster"
+          loading="lazy"
+          onerror="
+            this.onerror=null;
+            this.src='slime-s4.jpg';
+          "
+        >
+
+        <div
+          class="poster-overlay"
+        >
 
           <span class="rating">
             ⭐ ${escapeHTML(item.rating)}
           </span>
 
-          <h3>
-            ${escapeHTML(item.name)}
-          </h3>
+        </div>
 
-          <p>
-            ${escapeHTML(item.genre)}
-          </p>
+      </div>
+
+
+      <div class="card-info">
+
+        <h3>
+          ${escapeHTML(item.name)}
+        </h3>
+
+        <div class="card-meta">
+
+          <span class="rating">
+            ⭐ ${escapeHTML(item.rating)}
+          </span>
+
+          • ${escapeHTML(item.genre)}
+
+          • ${escapeHTML(item.year)}
 
         </div>
 
       </div>
 
-      <div class="anime-card-actions">
+
+      <div class="card-actions">
 
         <button
-          onclick="openAnime(${Number(item.id)})"
+          onclick="
+            event.stopPropagation();
+            openPlayer(${id}, 1);
+          "
         >
           ▶ Watch
         </button>
 
         <button
-          onclick="toggleWatchlist(${Number(item.id)})"
+          onclick="
+            event.stopPropagation();
+            toggleWatchlist(${id});
+          "
         >
           ${
-            inWatchlist
+            saved
               ? "✓ Saved"
               : "＋ Watchlist"
           }
@@ -711,17 +986,27 @@ function animeCard(item) {
 
 }
 
+
 /* =========================================================
    RENDER GRID
-   ========================================================= */
+========================================================= */
 
-function renderGrid(id, list) {
+function renderGrid(
+  elementId,
+  list
+) {
 
-  const grid = $(id);
+  const grid =
+    $(elementId);
 
-  if (!grid) return;
+  if (!grid) {
+    return;
+  }
 
-  if (!Array.isArray(list) || list.length === 0) {
+  if (
+    !Array.isArray(list) ||
+    list.length === 0
+  ) {
 
     grid.innerHTML = `
       <div class="empty-state">
@@ -730,58 +1015,77 @@ function renderGrid(id, list) {
     `;
 
     return;
-
   }
 
   grid.innerHTML =
-    list.map(animeCard).join("");
+    list
+      .map(animeCard)
+      .join("");
 
 }
+
 
 /* =========================================================
    TRENDING
-   ========================================================= */
+========================================================= */
 
 function renderTrending() {
 
-  const sorted = [...anime]
-    .sort((a, b) => Number(b.rating) - Number(a.rating))
-    .slice(0, 10);
+  const list =
+    [...anime]
+      .sort(
+        (a, b) =>
+          Number(b.rating) -
+          Number(a.rating)
+      )
+      .slice(0, 10);
 
   renderGrid(
     "trendingGrid",
-    sorted
+    list
   );
 
 }
+
 
 /* =========================================================
    LATEST
-   ========================================================= */
+========================================================= */
 
 function renderLatest() {
 
-  const sorted = [...anime]
-    .sort((a, b) => Number(b.year) - Number(a.year))
-    .slice(0, 10);
+  const list =
+    [...anime]
+      .sort(
+        (a, b) =>
+          Number(b.year) -
+          Number(a.year)
+      )
+      .slice(0, 10);
 
   renderGrid(
     "latestGrid",
-    sorted
+    list
   );
 
 }
 
+
 /* =========================================================
    WATCHLIST
-   ========================================================= */
+========================================================= */
 
 function renderWatchlist() {
 
-  const list = anime.filter(item =>
-    watchlist.includes(item.id) ||
-    watchlist.includes(String(item.id))
-  );
+  const list =
+    anime.filter(
+      item =>
+        watchlist.some(
+          savedId =>
+            Number(savedId) ===
+            Number(item.id)
+        )
+    );
 
   renderGrid(
     "watchGrid",
@@ -790,63 +1094,86 @@ function renderWatchlist() {
 
 }
 
+
 /* =========================================================
    GENRES
-   ========================================================= */
+========================================================= */
 
 function renderGenres() {
 
-  const grid = $("genresGrid");
+  const grid =
+    $("genresGrid");
 
-  if (!grid) return;
+  if (!grid) {
+    return;
+  }
 
-  const genres = [
-    ...new Set(
-      anime
-        .map(item => item.genre)
-        .filter(Boolean)
-    )
-  ].sort();
+  const genres =
+    [
+      ...new Set(
+        anime
+          .map(
+            item =>
+              item.genre
+          )
+          .filter(Boolean)
+      )
+    ].sort();
 
-  grid.innerHTML = genres.map(genre => `
+  grid.innerHTML =
+    genres
+      .map(
+        genre => `
 
-    <button
-      class="genre-btn"
-      onclick="filterGenre('${escapeHTML(genre)}')"
-    >
-      ${escapeHTML(genre)}
-    </button>
+          <button
+            class="genre-btn"
+            onclick="filterGenre('${escapeHTML(genre)}')"
+          >
+            ${escapeHTML(genre)}
+          </button>
 
-  `).join("");
+        `
+      )
+      .join("");
 
 }
 
+
 /* =========================================================
    RENDER ALL
-   ========================================================= */
+========================================================= */
 
 function renderAll() {
 
   renderTrending();
+
   renderLatest();
+
   renderWatchlist();
+
   renderGenres();
 
   updateCoins();
+
   updatePremium();
+
   updateLoginButton();
 
 }
 
+
 /* =========================================================
    SEARCH
-   ========================================================= */
+========================================================= */
 
 function runSearch() {
 
-  const input = $("search");
+  const input =
+    $("search");
 
-  if (!input) return;
+  if (!input) {
+    return;
+  }
 
   const query =
     input.value
@@ -861,22 +1188,27 @@ function runSearch() {
 
   }
 
-  const results = anime.filter(item => {
+  const results =
+    anime.filter(
+      item => {
 
-    const name =
-      String(item.name || "")
-        .toLowerCase();
+        const name =
+          String(
+            item.name || ""
+          ).toLowerCase();
 
-    const genre =
-      String(item.genre || "")
-        .toLowerCase();
+        const genre =
+          String(
+            item.genre || ""
+          ).toLowerCase();
 
-    return (
-      name.includes(query) ||
-      genre.includes(query)
+        return (
+          name.includes(query) ||
+          genre.includes(query)
+        );
+
+      }
     );
-
-  });
 
   renderGrid(
     "trendingGrid",
@@ -890,9 +1222,15 @@ function runSearch() {
 
 }
 
+
+/* =========================================================
+   SHOW ALL
+========================================================= */
+
 function showAll() {
 
-  const input = $("search");
+  const input =
+    $("search");
 
   if (input) {
     input.value = "";
@@ -902,17 +1240,24 @@ function showAll() {
 
 }
 
+
 /* =========================================================
    FILTER GENRE
-   ========================================================= */
+========================================================= */
 
-function filterGenre(genre) {
+function filterGenre(
+  genre
+) {
 
   const results =
     anime.filter(
       item =>
-        String(item.genre).toLowerCase() ===
-        String(genre).toLowerCase()
+        String(
+          item.genre || ""
+        ).toLowerCase() ===
+        String(
+          genre
+        ).toLowerCase()
     );
 
   renderGrid(
@@ -932,119 +1277,164 @@ function filterGenre(genre) {
 
 }
 
+
 /* =========================================================
    MODAL
-   ========================================================= */
+========================================================= */
 
-function openModal(content) {
+function openModal(
+  content
+) {
 
-  const modal = $("modal");
-  const body = $("modalBody");
+  const modal =
+    $("modal");
 
-  if (!modal || !body) return;
+  const body =
+    $("modalBody");
 
-  body.innerHTML = content;
+  if (!modal || !body) {
+    return;
+  }
 
-  modal.classList.remove("hidden");
+  body.innerHTML =
+    content;
 
-  modal.style.display = "flex";
+  modal.classList.remove(
+    "hidden"
+  );
+
+  modal.style.display =
+    "flex";
 
 }
+
 
 function closeModal() {
 
-  const modal = $("modal");
+  const modal =
+    $("modal");
 
-  if (!modal) return;
+  if (!modal) {
+    return;
+  }
 
-  modal.classList.add("hidden");
+  const player =
+    $("player");
 
-  modal.style.display = "none";
+  if (player) {
+
+    try {
+      player.pause();
+    } catch (error) {}
+
+  }
+
+  modal.classList.add(
+    "hidden"
+  );
+
+  modal.style.display =
+    "none";
 
 }
 
+
 /* =========================================================
    ANIME DETAILS
-   ========================================================= */
+========================================================= */
 
 function openAnime(id) {
 
   const item =
     anime.find(
-      a => Number(a.id) === Number(id)
+      animeItem =>
+        Number(animeItem.id) ===
+        Number(id)
     );
 
-  if (!item) return;
+  if (!item) {
+    return;
+  }
 
   const poster =
     item.poster ||
     getPoster(item.name);
 
   const saved =
-    watchlist.includes(item.id) ||
-    watchlist.includes(String(item.id));
+    watchlist.some(
+      savedId =>
+        Number(savedId) ===
+        Number(item.id)
+    );
 
   openModal(`
 
-    <div class="anime-detail">
-
-      <button
-        class="modal-close"
-        onclick="closeModal()"
-      >
-        ×
-      </button>
+    <div class="detail-layout">
 
       <img
         src="${escapeHTML(poster)}"
         class="detail-poster"
         alt="${escapeHTML(item.name)}"
+        onerror="
+          this.onerror=null;
+          this.src='slime-s4.jpg';
+        "
       >
 
-      <div class="detail-content">
+      <div class="detail-info">
 
-        <span class="detail-rating">
-          ⭐ ${escapeHTML(item.rating)}
-        </span>
-
-        <h2>
+        <h2 class="modal-title">
           ${escapeHTML(item.name)}
         </h2>
 
         <div class="detail-meta">
-          ${escapeHTML(item.year)}
-          •
-          ${escapeHTML(item.genre)}
-          •
-          ${escapeHTML(item.status)}
+
+          ⭐ ${escapeHTML(item.rating)}
+
+          • ${escapeHTML(item.genre)}
+
+          • ${escapeHTML(item.year)}
+
+          • ${escapeHTML(item.status)}
+
         </div>
 
-        <p>
+        <p class="detail-description">
+
           ${escapeHTML(item.description)}
+
         </p>
 
-        <p>
+        <p class="detail-meta">
+
           Episodes:
           <strong>
             ${escapeHTML(item.episodes)}
           </strong>
+
         </p>
 
-        <div class="detail-buttons">
+        <div class="modal-actions">
 
           <button
-            onclick="openPlayer(${Number(item.id)}, 1)"
+            class="blue"
+            onclick="
+              openPlayer(${Number(item.id)}, 1)
+            "
           >
             ▶ Watch Now
           </button>
 
           <button
-            onclick="toggleWatchlist(${Number(item.id)}); openAnime(${Number(item.id)})"
+            onclick="
+              toggleWatchlist(${Number(item.id)});
+              openAnime(${Number(item.id)});
+            "
           >
             ${
               saved
                 ? "✓ Remove Watchlist"
-                : "＋ Add Watchlist"
+                : "＋ Watchlist"
             }
           </button>
 
@@ -1058,175 +1448,281 @@ function openAnime(id) {
 
 }
 
+
 /* =========================================================
    WATCHLIST
-   ========================================================= */
+========================================================= */
 
 function toggleWatchlist(id) {
 
-  const numberId = Number(id);
+  const numberId =
+    Number(id);
 
   const index =
     watchlist.findIndex(
-      item => Number(item) === numberId
+      savedId =>
+        Number(savedId) ===
+        numberId
     );
 
   if (index >= 0) {
 
-    watchlist.splice(index, 1);
+    watchlist.splice(
+      index,
+      1
+    );
 
   } else {
 
-    watchlist.push(numberId);
+    watchlist.push(
+      numberId
+    );
 
   }
 
-  save(WATCH_KEY, watchlist);
-
-  renderWatchlist();
+  save(
+    WATCH_KEY,
+    watchlist
+  );
 
   renderTrending();
 
   renderLatest();
 
+  renderWatchlist();
+
 }
 
-/* =========================================================
-   PLAYER
-   ========================================================= */
 
-function getVideoSource(id, quality) {
+/* =========================================================
+   VIDEO SOURCE
+========================================================= */
+
+function getVideoSource(
+  id,
+  quality
+) {
 
   const sources =
-    VIDEO_URLS[id];
+    VIDEO_URLS[
+      Number(id)
+    ];
 
-  if (!sources) return "";
+  if (!sources) {
+    return "";
+  }
 
-  const key =
-    String(quality)
+  const normalized =
+    String(
+      quality || "Auto"
+    )
       .toLowerCase()
-      .replace(" ", "");
+      .replace(/\s+/g, "");
+
+  if (
+    sources[normalized]
+  ) {
+
+    return sources[
+      normalized
+    ];
+
+  }
+
+  if (
+    normalized === "4k" &&
+    sources["4k"]
+  ) {
+
+    return sources["4k"];
+
+  }
 
   return (
-    sources[key] ||
     sources.auto ||
     ""
   );
 
 }
 
-function openPlayer(id, episode = 1) {
+
+/* =========================================================
+   OPEN VIDEO PLAYER
+========================================================= */
+
+function openPlayer(
+  id,
+  episode = 1
+) {
 
   const item =
     anime.find(
-      a => Number(a.id) === Number(id)
+      animeItem =>
+        Number(animeItem.id) ===
+        Number(id)
     );
 
-  if (!item) return;
+  if (!item) {
+    return;
+  }
+
+  const totalEpisodes =
+    Math.max(
+      1,
+      Math.min(
+        Number(item.episodes) || 1,
+        50
+      )
+    );
 
   openModal(`
 
-    <div class="player-modal">
+    <div>
 
-      <button
-        class="modal-close"
-        onclick="closeModal()"
-      >
-        ×
-      </button>
+      <h2 class="modal-title">
 
-      <h2>
         ${escapeHTML(item.name)}
+
       </h2>
+
 
       <div class="player-controls">
 
-        <label>
-          Language
-        </label>
+        <div>
 
-        <select id="languageSelect">
+          <label>
+            Language
+          </label>
 
-          ${LANGUAGES.map(
-            language => `
-              <option value="${escapeHTML(language)}">
-                ${escapeHTML(language)}
-              </option>
-            `
-          ).join("")}
+          <select
+            id="languageSelect"
+          >
 
-        </select>
+            ${LANGUAGES
+              .map(
+                language => `
 
-        <label>
-          Quality
-        </label>
+                  <option
+                    value="${escapeHTML(language)}"
+                  >
+                    ${escapeHTML(language)}
+                  </option>
 
-        <select
-          id="qualitySelect"
-          onchange="changeQuality(${Number(id)})"
-        >
-
-          ${QUALITIES.map(
-            quality => `
-              <option value="${escapeHTML(quality)}">
-                ${escapeHTML(quality)}
-              </option>
-            `
-          ).join("")}
-
-        </select>
-
-        <label>
-          Episode
-        </label>
-
-        <select
-          id="episodeSelect"
-          onchange="changeEpisode(${Number(id)})"
-        >
-
-          ${Array.from(
-            {
-              length: Math.min(
-                Number(item.episodes) || 1,
-                50
+                `
               )
-            },
-            (_, index) => `
-              <option
-                value="${index + 1}"
-                ${index + 1 === Number(episode)
-                  ? "selected"
-                  : ""}
-              >
-                Episode ${index + 1}
-              </option>
-            `
-          ).join("")}
+              .join("")}
 
-        </select>
+          </select>
+
+        </div>
+
+
+        <div>
+
+          <label>
+            Quality
+          </label>
+
+          <select
+            id="qualitySelect"
+            onchange="
+              changeQuality(${Number(id)})
+            "
+          >
+
+            ${QUALITIES
+              .map(
+                quality => `
+
+                  <option
+                    value="${escapeHTML(quality)}"
+                  >
+                    ${escapeHTML(quality)}
+                  </option>
+
+                `
+              )
+              .join("")}
+
+          </select>
+
+        </div>
+
+
+        <div>
+
+          <label>
+            Episode
+          </label>
+
+          <select
+            id="episodeSelect"
+            onchange="
+              changeEpisode(${Number(id)})
+            "
+          >
+
+            ${Array.from(
+              {
+                length:
+                  totalEpisodes
+              },
+              (_, index) => {
+
+                const ep =
+                  index + 1;
+
+                return `
+
+                  <option
+                    value="${ep}"
+                    ${
+                      ep ===
+                      Number(episode)
+                        ? "selected"
+                        : ""
+                    }
+                  >
+                    Episode ${ep}
+                  </option>
+
+                `;
+
+              }
+            ).join("")}
+
+          </select>
+
+        </div>
 
       </div>
 
+
+      <!-- REAL VIDEO PLAYER -->
+
       <video
         id="player"
+        class="real-player"
         controls
         preload="metadata"
         playsinline
       ></video>
 
-      <div class="player-message" id="playerMessage">
 
-        Select a quality to load the video.
-
+      <div
+        id="playerMessage"
+        class="player-message"
+      >
+        Video source not configured.
       </div>
+
 
       <a
         id="downloadBtn"
         class="download-btn"
         href="#"
         target="_blank"
-        rel="noopener"
+        rel="noopener noreferrer"
         style="display:none"
       >
         ⬇ Download
@@ -1236,13 +1732,24 @@ function openPlayer(id, episode = 1) {
 
   `);
 
-  setTimeout(() => {
 
-    changeQuality(id);
+  setTimeout(
+    () => {
 
-  }, 100);
+      changeQuality(
+        id
+      );
+
+    },
+    100
+  );
 
 }
+
+
+/* =========================================================
+   CHANGE QUALITY
+========================================================= */
 
 function changeQuality(id) {
 
@@ -1258,54 +1765,98 @@ function changeQuality(id) {
   const download =
     $("downloadBtn");
 
-  if (!qualitySelect || !player) {
+  if (
+    !qualitySelect ||
+    !player
+  ) {
     return;
   }
 
   const quality =
-    qualitySelect.value || "Auto";
+    qualitySelect.value ||
+    "Auto";
 
   const source =
-    getVideoSource(id, quality);
+    getVideoSource(
+      id,
+      quality
+    );
+
+
+  /*
+     NO VIDEO SOURCE
+  */
 
   if (!source) {
 
-    player.removeAttribute("src");
+    try {
+      player.pause();
+    } catch (error) {}
+
+    player.removeAttribute(
+      "src"
+    );
 
     player.load();
 
     if (message) {
 
       message.innerHTML = `
-        <strong>Video not configured yet.</strong>
-        <br>
-        Add your authorized video URL
-        in <code>VIDEO_URLS</code>
-        inside script.js.
+
+        <strong>
+          Video source available nahi hai.
+        </strong>
+
+        <br><br>
+
+        Apni authorized
+        <b>.mp4</b>
+        video URL
+        <code>VIDEO_URLS</code>
+        mein add karo.
+
       `;
 
     }
 
     if (download) {
-      download.style.display = "none";
+
+      download.style.display =
+        "none";
+
+      download.removeAttribute(
+        "href"
+      );
+
     }
 
     return;
 
   }
 
-  player.src = source;
+
+  /*
+     REAL VIDEO URL
+  */
+
+  player.src =
+    source;
 
   player.load();
 
+
   if (message) {
+
     message.textContent =
       "Video ready.";
+
   }
+
 
   if (download) {
 
-    download.href = source;
+    download.href =
+      source;
 
     download.style.display =
       "inline-flex";
@@ -1314,41 +1865,34 @@ function changeQuality(id) {
 
 }
 
+
+/* =========================================================
+   CHANGE EPISODE
+========================================================= */
+
 function changeEpisode(id) {
 
-  const episodeSelect =
-    $("episodeSelect");
+  /*
+     Abhi VIDEO_URLS quality based hai.
+     Agar episode-specific URLs add karoge
+     to yahan extend kar sakte ho.
+  */
 
-  if (!episodeSelect) return;
-
-  const episode =
-    Number(episodeSelect.value) || 1;
-
-  const qualitySelect =
-    $("qualitySelect");
-
-  const quality =
-    qualitySelect
-      ? qualitySelect.value
-      : "Auto";
-
-  const source =
-    getVideoSource(id, quality);
-
-  const player =
-    $("player");
-
-  if (!player) return;
-
-  if (!source) return;
-
-  player.src = source;
-
-  player.load();
+  changeQuality(
+    id
+  );
 
 }
 
-function watchEpisode(id, episode = 1) {
+
+/* =========================================================
+   WATCH EPISODE
+========================================================= */
+
+function watchEpisode(
+  id,
+  episode = 1
+) {
 
   openPlayer(
     id,
@@ -1357,16 +1901,20 @@ function watchEpisode(id, episode = 1) {
 
 }
 
+
 /* =========================================================
    DAILY COINS
-   ========================================================= */
+========================================================= */
 
 function claimDaily() {
 
   const today =
     todayKey();
 
-  if (dailyClaimed === today) {
+  if (
+    dailyClaimed ===
+    today
+  ) {
 
     alert(
       "Daily coins already claimed today."
@@ -1378,7 +1926,8 @@ function claimDaily() {
 
   coins += 10;
 
-  dailyClaimed = today;
+  dailyClaimed =
+    today;
 
   saveState();
 
@@ -1390,19 +1939,60 @@ function claimDaily() {
 
 }
 
+
 function claimDailyCoins() {
 
   claimDaily();
 
 }
 
+
 /* =========================================================
    PREMIUM
-   ========================================================= */
+========================================================= */
 
-function redeemPremium(days, price) {
+/*
+   HTML calls:
 
-  if (coins < price) {
+   redeemPremium(70, 7)
+
+   Meaning:
+
+   70 coins
+   7 days
+
+   Therefore function is:
+
+   redeemPremium(price, days)
+*/
+
+function redeemPremium(
+  price,
+  days
+) {
+
+  price =
+    Number(price);
+
+  days =
+    Number(days);
+
+  if (
+    !Number.isFinite(price) ||
+    !Number.isFinite(days)
+  ) {
+
+    alert(
+      "Invalid premium plan."
+    );
+
+    return;
+
+  }
+
+  if (
+    coins < price
+  ) {
 
     alert(
       `You need ${price} coins.`
@@ -1412,31 +2002,36 @@ function redeemPremium(days, price) {
 
   }
 
-  coins -= price;
+  coins -=
+    price;
 
   const now =
     Date.now();
 
-  if (premiumUntil > now) {
+  const duration =
+    days *
+    24 *
+    60 *
+    60 *
+    1000;
+
+
+  if (
+    premiumUntil >
+    now
+  ) {
 
     premiumUntil +=
-      days *
-      24 *
-      60 *
-      60 *
-      1000;
+      duration;
 
   } else {
 
     premiumUntil =
       now +
-      days *
-      24 *
-      60 *
-      60 *
-      1000;
+      duration;
 
   }
+
 
   saveState();
 
@@ -1450,77 +2045,25 @@ function redeemPremium(days, price) {
 
 }
 
-/* =========================================================
-   PREMIUM MODAL
-   ========================================================= */
-
-function openPremium() {
-
-  openModal(`
-
-    <div class="simple-modal">
-
-      <button
-        class="modal-close"
-        onclick="closeModal()"
-      >
-        ×
-      </button>
-
-      <h2>
-        👑 NOX Premium
-      </h2>
-
-      <p>
-        Coins:
-        <strong>${coins}</strong>
-      </p>
-
-      <div class="premium-options">
-
-        <button
-          onclick="redeemPremium(7, 70)"
-        >
-          7 Days — 70 Coins
-        </button>
-
-        <button
-          onclick="redeemPremium(30, 250)"
-        >
-          30 Days — 250 Coins
-        </button>
-
-      </div>
-
-    </div>
-
-  `);
-
-}
 
 /* =========================================================
    LOGIN
-   ========================================================= */
+========================================================= */
 
 function openLogin() {
 
   openModal(`
 
-    <div class="simple-modal">
-
-      <button
-        class="modal-close"
-        onclick="closeModal()"
-      >
-        ×
-      </button>
+    <div class="modal-form">
 
       <h2>
         Login
       </h2>
 
       <form
-        onsubmit="loginUser(event)"
+        onsubmit="
+          loginUser(event)
+        "
       >
 
         <input
@@ -1537,18 +2080,18 @@ function openLogin() {
           required
         >
 
-        <button type="submit">
+        <button
+          type="submit"
+        >
           Login
         </button>
 
       </form>
 
-      <p>
-        Don't have an account?
-      </p>
-
       <button
-        onclick="openSignup()"
+        onclick="
+          openSignup()
+        "
       >
         Create Account
       </button>
@@ -1559,27 +2102,40 @@ function openLogin() {
 
 }
 
-function loginUser(event) {
+
+function loginUser(
+  event
+) {
 
   event.preventDefault();
 
   const username =
-    $("loginUsername")?.value.trim();
+    $("loginUsername")
+      ?.value
+      .trim();
 
   const password =
-    $("loginPassword")?.value;
+    $("loginPassword")
+      ?.value;
 
-  if (!username || !password) {
+  if (
+    !username ||
+    !password
+  ) {
     return;
   }
 
   const user =
     users.find(
       u =>
-        String(u.username).toLowerCase() ===
+        String(
+          u.username
+        ).toLowerCase() ===
         username.toLowerCase() &&
-        u.password === password
+        u.password ===
+        password
     );
+
 
   if (!user) {
 
@@ -1591,10 +2147,17 @@ function loginUser(event) {
 
   }
 
+
   currentUser = {
-    username: user.username,
-    role: user.role
+
+    username:
+      user.username,
+
+    role:
+      user.role
+
   };
+
 
   saveState();
 
@@ -1608,29 +2171,25 @@ function loginUser(event) {
 
 }
 
+
 /* =========================================================
-   SIGNUP
-   ========================================================= */
+   SIGN UP
+========================================================= */
 
 function openSignup() {
 
   openModal(`
 
-    <div class="simple-modal">
-
-      <button
-        class="modal-close"
-        onclick="closeModal()"
-      >
-        ×
-      </button>
+    <div class="modal-form">
 
       <h2>
         Create Account
       </h2>
 
       <form
-        onsubmit="signupUser(event)"
+        onsubmit="
+          signupUser(event)
+        "
       >
 
         <input
@@ -1649,7 +2208,9 @@ function openSignup() {
           required
         >
 
-        <button type="submit">
+        <button
+          type="submit"
+        >
           Sign Up
         </button>
 
@@ -1661,26 +2222,39 @@ function openSignup() {
 
 }
 
-function signupUser(event) {
+
+function signupUser(
+  event
+) {
 
   event.preventDefault();
 
   const username =
-    $("signupUsername")?.value.trim();
+    $("signupUsername")
+      ?.value
+      .trim();
 
   const password =
-    $("signupPassword")?.value;
+    $("signupPassword")
+      ?.value;
 
-  if (!username || !password) {
+  if (
+    !username ||
+    !password
+  ) {
     return;
   }
+
 
   const exists =
     users.some(
       u =>
-        String(u.username).toLowerCase() ===
+        String(
+          u.username
+        ).toLowerCase() ===
         username.toLowerCase()
     );
+
 
   if (exists) {
 
@@ -1692,18 +2266,31 @@ function signupUser(event) {
 
   }
 
+
   users.push({
 
-    username,
-    password,
-    role: "user"
+    username:
+      username,
+
+    password:
+      password,
+
+    role:
+      "user"
 
   });
 
+
   currentUser = {
-    username,
-    role: "user"
+
+    username:
+      username,
+
+    role:
+      "user"
+
   };
+
 
   saveState();
 
@@ -1717,13 +2304,15 @@ function signupUser(event) {
 
 }
 
+
 /* =========================================================
    LOGOUT
-   ========================================================= */
+========================================================= */
 
 function logout() {
 
-  currentUser = null;
+  currentUser =
+    null;
 
   save(
     CURRENT_USER_KEY,
@@ -1738,17 +2327,20 @@ function logout() {
 
 }
 
+
 /* =========================================================
    ADMIN LOGIN
-   ========================================================= */
+========================================================= */
 
 function openAdminLogin() {
 
   if (
     currentUser &&
     (
-      currentUser.role === "admin" ||
-      currentUser.role === "super"
+      currentUser.role ===
+        "admin" ||
+      currentUser.role ===
+        "super"
     )
   ) {
 
@@ -1758,23 +2350,19 @@ function openAdminLogin() {
 
   }
 
+
   openModal(`
 
-    <div class="simple-modal">
-
-      <button
-        class="modal-close"
-        onclick="closeModal()"
-      >
-        ×
-      </button>
+    <div class="modal-form">
 
       <h2>
         🔐 Admin Login
       </h2>
 
       <form
-        onsubmit="adminLogin(event)"
+        onsubmit="
+          adminLogin(event)
+        "
       >
 
         <input
@@ -1791,7 +2379,9 @@ function openAdminLogin() {
           required
         >
 
-        <button type="submit">
+        <button
+          type="submit"
+        >
           Enter Admin Panel
         </button>
 
@@ -1803,27 +2393,40 @@ function openAdminLogin() {
 
 }
 
-function adminLogin(event) {
+
+function adminLogin(
+  event
+) {
 
   event.preventDefault();
 
   const username =
-    $("adminUsername")?.value.trim();
+    $("adminUsername")
+      ?.value
+      .trim();
 
   const password =
-    $("adminPassword")?.value;
+    $("adminPassword")
+      ?.value;
+
 
   const user =
     users.find(
       u =>
-        String(u.username).toLowerCase() ===
+        String(
+          u.username
+        ).toLowerCase() ===
         username.toLowerCase() &&
-        u.password === password &&
+        u.password ===
+        password &&
         (
-          u.role === "admin" ||
-          u.role === "super"
+          u.role ===
+            "admin" ||
+          u.role ===
+            "super"
         )
     );
+
 
   if (!user) {
 
@@ -1835,10 +2438,17 @@ function adminLogin(event) {
 
   }
 
+
   currentUser = {
-    username: user.username,
-    role: user.role
+
+    username:
+      user.username,
+
+    role:
+      user.role
+
   };
+
 
   saveState();
 
@@ -1846,17 +2456,20 @@ function adminLogin(event) {
 
 }
 
+
 /* =========================================================
    ADMIN PANEL
-   ========================================================= */
+========================================================= */
 
 function openAdminPanel() {
 
   if (
     !currentUser ||
     (
-      currentUser.role !== "admin" &&
-      currentUser.role !== "super"
+      currentUser.role !==
+        "admin" &&
+      currentUser.role !==
+        "super"
     )
   ) {
 
@@ -1868,797 +2481,96 @@ function openAdminPanel() {
 
   }
 
+
   const isSuper =
-    currentUser.role === "super";
+    currentUser.role ===
+    "super";
+
 
   openModal(`
 
     <div class="admin-panel">
-
-      <button
-        class="modal-close"
-        onclick="closeModal()"
-      >
-        ×
-      </button>
 
       <h2>
         🛠 NOX Admin Panel
       </h2>
 
       <p>
+
         Logged in as:
+
         <strong>
-          ${escapeHTML(currentUser.username)}
+          ${escapeHTML(
+            currentUser.username
+          )}
         </strong>
+
       </p>
 
+
       <hr>
+
 
       <h3>
         Add Anime
       </h3>
 
+
       <form
-        onsubmit="adminAddAnime(event)"
+        onsubmit="
+          adminAddAnime(event)
+        "
       >
 
-        <input
-          id="adminAnimeName"
-          placeholder="Anime name"
-          required
-        >
-
-        <input
-          id="adminAnimeGenre"
-          placeholder="Genre"
-          required
-        >
-
-        <input
-          id="adminAnimeYear"
-          type="number"
-          placeholder="Year"
-          value="${new Date().getFullYear()}"
-        >
-
-        <input
-          id="adminAnimeRating"
-          type="number"
-          step="0.1"
-          min="0"
-          max="10"
-          placeholder="Rating"
-          value="8.0"
-        >
-
-        <input
-          id="adminAnimeEpisodes"
-          type="number"
-          min="1"
-          placeholder="Episodes"
-          value="12"
-        >
-
-        <input
-          id="adminAnimePoster"
-          placeholder="Poster filename e.g. anime.jpg"
-        >
-
-        <textarea
-          id="adminAnimeDescription"
-          placeholder="Description"
-        ></textarea>
-
-        <button type="submit">
-          ＋ Add Anime
-        </button>
-
-      </form>
-
-      <hr>
-
-      <h3>
-        Anime List
-      </h3>
-
-      <div class="admin-anime-list">
-
-        ${anime.map(item => `
-
-          <div class="admin-item">
-
-            <span>
-              ${escapeHTML(item.name)}
-            </span>
-
-            <button
-              onclick="adminDeleteAnime(${Number(item.id)})"
-            >
-              Delete
-            </button>
-
-          </div>
-
-        `).join("")}
-
-      </div>
-
-      ${
-        isSuper
-          ? `
-
-            <hr>
-
-            <h3>
-              Add Admin
-            </h3>
-
-            <form
-              onsubmit="adminAddAdmin(event)"
-            >
-
-              <input
-                id="newAdminUsername"
-                placeholder="Username"
-                required
-              >
-
-              <input
-                id="newAdminPassword"
-                placeholder="Password"
-                required
-              >
-
-              <button type="submit">
-                ＋ Add Admin
-              </button>
-
-            </form>
-
-            <h3>
-              Admin Accounts
-            </h3>
-
-            <div>
-
-              ${users
-                .filter(
-                  u =>
-                    u.role === "admin" ||
-                    u.role === "super"
-                )
-                .map(user => `
-
-                  <div class="admin-item">
-
-                    <span>
-                      ${escapeHTML(user.username)}
-                      (${escapeHTML(user.role)})
-                    </span>
-
-                    ${
-                      user.role === "admin"
-                        ? `
-                          <button
-                            onclick="adminDeleteAdmin('${escapeHTML(user.username)}')"
-                          >
-                            Remove
-                          </button>
-                        `
-                        : ""
-                    }
-
-                  </div>
-
-                `)
-                .join("")}
-
-            </div>
-
-          `
-          : ""
-      }
-
-    </div>
-
-  `);
-
-}
-
-/* =========================================================
-   ADD ANIME
-   ========================================================= */
-
-function adminAddAnime(event) {
-
-  event.preventDefault();
-
-  if (
-    !currentUser ||
-    (
-      currentUser.role !== "admin" &&
-      currentUser.role !== "super"
-    )
-  ) {
-
-    alert(
-      "Admin permission required."
-    );
-
-    return;
-
-  }
-
-  const name =
-    $("adminAnimeName")?.value.trim();
-
-  const genre =
-    $("adminAnimeGenre")?.value.trim();
-
-  const year =
-    Number(
-      $("adminAnimeYear")?.value
-    ) || new Date().getFullYear();
-
-  const rating =
-    Number(
-      $("adminAnimeRating")?.value
-    ) || 8;
-
-  const episodes =
-    Number(
-      $("adminAnimeEpisodes")?.value
-    ) || 12;
-
-  const poster =
-    $("adminAnimePoster")?.value.trim() ||
-    "slime-s4.jpg";
-
-  const description =
-    $("adminAnimeDescription")?.value.trim() ||
-    "New anime added to NOX Anime.";
-
-  if (!name || !genre) {
-
-    alert(
-      "Anime name and genre are required."
-    );
-
-    return;
-
-  }
-
-  const exists =
-    anime.some(
-      item =>
-        String(item.name).toLowerCase() ===
-        name.toLowerCase()
-    );
-
-  if (exists) {
-
-    alert(
-      "This anime already exists."
-    );
-
-    return;
-
-  }
-
-  const newId =
-    anime.length
-      ? Math.max(
-          ...anime.map(
-            item => Number(item.id) || 0
-          )
-        ) + 1
-      : 1;
-
-  anime.push({
-
-    id: newId,
-    name,
-    title: name,
-    genre,
-    rating,
-    year,
-    episodes,
-    status: "Ongoing",
-    poster,
-    description
-
-  });
-
-  save(
-    ANIME_KEY,
-    anime
-  );
-
-  renderAll();
-
-  alert(
-    "Anime added successfully."
-  );
-
-  openAdminPanel();
-
-}
-
-/* =========================================================
-   DELETE ANIME
-   ========================================================= */
-
-function adminDeleteAnime(id) {
-
-  if (
-    !currentUser ||
-    (
-      currentUser.role !== "admin" &&
-      currentUser.role !== "super"
-    )
-  ) {
-
-    alert(
-      "Admin permission required."
-    );
-
-    return;
-
-  }
-
-  const item =
-    anime.find(
-      a => Number(a.id) === Number(id)
-    );
-
-  if (!item) return;
-
-  if (
-    !confirm(
-      `Delete "${item.name}"?`
-    )
-  ) {
-    return;
-  }
-
-  anime =
-    anime.filter(
-      a => Number(a.id) !== Number(id)
-    );
-
-  watchlist =
-    watchlist.filter(
-      a => Number(a) !== Number(id)
-    );
-
-  saveState();
-
-  renderAll();
-
-  openAdminPanel();
-
-}
-
-/* =========================================================
-   ADD ADMIN
-   ========================================================= */
-
-function adminAddAdmin(event) {
-
-  event.preventDefault();
-
-  if (
-    !currentUser ||
-    currentUser.role !== "super"
-  ) {
-
-    alert(
-      "Only Super Admin can add admins."
-    );
-
-    return;
-
-  }
-
-  const username =
-    $("newAdminUsername")?.value.trim();
-
-  const password =
-    $("newAdminPassword")?.value;
-
-  if (!username || !password) {
-    return;
-  }
-
-  const exists =
-    users.some(
-      u =>
-        String(u.username).toLowerCase() ===
-        username.toLowerCase()
-    );
-
-  if (exists) {
-
-    alert(
-      "Username already exists."
-    );
-
-    return;
-
-  }
-
-  users.push({
-
-    username,
-    password,
-    role: "admin"
-
-  });
-
-  save(
-    USERS_KEY,
-    users
-  );
-
-  alert(
-    "Admin added."
-  );
-
-  openAdminPanel();
-
-}
-
-/* =========================================================
-   REMOVE ADMIN
-   ========================================================= */
-
-function adminDeleteAdmin(username) {
-
-  if (
-    !currentUser ||
-    currentUser.role !== "super"
-  ) {
-
-    alert(
-      "Only Super Admin can remove admins."
-    );
-
-    return;
-
-  }
-
-  if (
-    username === currentUser.username
-  ) {
-
-    alert(
-      "You cannot remove yourself."
-    );
-
-    return;
-
-  }
-
-  if (
-    !confirm(
-      `Remove admin "${username}"?`
-    )
-  ) {
-    return;
-  }
-
-  users =
-    users.filter(
-      u =>
-        !(
-          u.username === username &&
-          u.role === "admin"
-        )
-    );
-
-  save(
-    USERS_KEY,
-    users
-  );
-
-  openAdminPanel();
-
-}
-
-/* =========================================================
-   CLOSE MODAL WHEN CLICKING BACKGROUND
-   ========================================================= */
-
-function setupModal() {
-
-  const modal = $("modal");
-
-  if (!modal) return;
-
-  modal.addEventListener(
-    "click",
-    event => {
-
-      if (event.target === modal) {
-        closeModal();
-      }
-
-    }
-  );
-
-}
-
-/* =========================================================
-   KEYBOARD
-   ========================================================= */
-
-function setupKeyboard() {
-
-  document.addEventListener(
-    "keydown",
-    event => {
-
-      if (event.key === "Escape") {
-        closeModal();
-      }
-
-    }
-  );
-
-}
-
-/* =========================================================
-   BUTTON EVENTS
-   ========================================================= */
-
-function setupButtons() {
-
-  const dailyBtn =
-    $("dailyBtn");
-
-  if (dailyBtn) {
-
-    dailyBtn.addEventListener(
-      "click",
-      claimDaily
-    );
-
-  }
-
-  const loginBtn =
-    $("loginBtn");
-
-  if (loginBtn) {
-
-    loginBtn.addEventListener(
-      "click",
-      () => {
-
-        if (currentUser) {
-
-          openModal(`
-
-            <div class="simple-modal">
-
-              <button
-                class="modal-close"
-                onclick="closeModal()"
-              >
-                ×
-              </button>
-
-              <h2>
-                👤 Account
-              </h2>
-
-              <p>
-                Username:
-                <strong>
-                  ${escapeHTML(currentUser.username)}
-                </strong>
-              </p>
-
-              <p>
-                Role:
-                <strong>
-                  ${escapeHTML(currentUser.role)}
-                </strong>
-              </p>
-
-              <button
-                onclick="logout(); closeModal();"
-              >
-                Logout
-              </button>
-
-            </div>
-
-          `);
-
-        } else {
-
-          openLogin();
-
-        }
-
-      }
-    );
-
-  }
-
-  const adminBtn =
-    $("adminBtn");
-
-  if (adminBtn) {
-
-    adminBtn.addEventListener(
-      "click",
-      openAdminLogin
-    );
-
-  }
-
-  const search =
-    $("search");
-
-  if (search) {
-
-    search.addEventListener(
-      "input",
-      runSearch
-    );
-
-  }
-
-}
-
-/* =========================================================
-   GLOBAL FUNCTIONS
-   ========================================================= */
-
-window.openAnime =
-  openAnime;
-
-window.closeModal =
-  closeModal;
-
-window.openModal =
-  openModal;
-
-window.toggleWatchlist =
-  toggleWatchlist;
-
-window.openPlayer =
-  openPlayer;
-
-window.watchEpisode =
-  watchEpisode;
-
-window.changeQuality =
-  changeQuality;
-
-window.changeEpisode =
-  changeEpisode;
-
-window.filterGenre =
-  filterGenre;
-
-window.showAll =
-  showAll;
-
-window.runSearch =
-  runSearch;
-
-window.claimDaily =
-  claimDaily;
-
-window.claimDailyCoins =
-  claimDailyCoins;
-
-window.openPremium =
-  openPremium;
-
-window.redeemPremium =
-  redeemPremium;
-
-window.openLogin =
-  openLogin;
-
-window.loginUser =
-  loginUser;
-
-window.openSignup =
-  openSignup;
-
-window.signupUser =
-  signupUser;
-
-window.logout =
-  logout;
-
-window.openAdminLogin =
-  openAdminLogin;
-
-window.adminLogin =
-  adminLogin;
-
-window.openAdminPanel =
-  openAdminPanel;
-
-window.adminAddAnime =
-  adminAddAnime;
-
-window.adminDeleteAnime =
-  adminDeleteAnime;
-
-window.adminAddAdmin =
-  adminAddAdmin;
-
-window.adminDeleteAdmin =
-  adminDeleteAdmin;
-
-/* =========================================================
-   START NOX
-   ========================================================= */
-
-function startNOX() {
-
-  try {
-
-    setupModal();
-
-    setupKeyboard();
-
-    setupButtons();
-
-    renderAll();
-
-    hideLoader();
-
-    console.log(
-      "NOX Anime loaded successfully."
-    );
-
-  } catch (error) {
-
-    console.error(
-      "NOX Anime startup error:",
-      error
-    );
-
-    hideLoader();
-
-    const app =
-      $("app");
-
-    if (app) {
-
-      app.classList.remove(
-        "hidden"
-      );
-
-    }
-
-  }
-
-}
-
-/* =========================================================
-   STARTUP
-   ========================================================= */
-
-if (
-  document.readyState === "loading"
-) {
-
-  document.addEventListener(
-    "DOMContentLoaded",
-    startNOX
-  );
-
-} else {
-
-  startNOX();
-
-       }
+        <div class="admin-row">
+
+          <input
+            id="adminAnimeName"
+            placeholder="Anime name"
+            required
+          >
+
+          <input
+            id="adminAnimeGenre"
+            placeholder="Genre"
+            required
+          >
+
+        </div>
+
+
+        <div class="admin-row">
+
+          <input
+            id="adminAnimeYear"
+            type="number"
+            placeholder="Year"
+            value="${new Date().getFullYear()}"
+          >
+
+          <input
+            id="adminAnimeRating"
+            type="number"
+            step="0.1"
+            min="0"
+            max="10"
+            placeholder="Rating"
+            value="8.0"
+          >
+
+        </div>
+
+
+        <div class="admin-row">
+
+          <input
+            id="adminAnimeEpisodes"
+            type="number"
+            min="1"
+            placeholder="Episodes"
+            value="12"
+          >
+
+          <input
+            id="adminAnimePoster"
+            placeholder="Poster filename e.g. anime.jpg
