@@ -15,7 +15,8 @@ body {
 
 button,
 input,
-select {
+select,
+textarea {
   font-family: inherit;
 }
 
@@ -174,6 +175,7 @@ button {
   padding: 90px 7%;
   position: relative;
   overflow: hidden;
+
   background:
     radial-gradient(
       circle at 75% 45%,
@@ -193,6 +195,7 @@ button {
   content: "";
   position: absolute;
   inset: 0;
+
   background:
     linear-gradient(
       180deg,
@@ -201,6 +204,7 @@ button {
       transparent 75%,
       #020712 100%
     );
+
   pointer-events: none;
 }
 
@@ -404,6 +408,37 @@ button {
 
 
 /* =========================
+   CARD BUTTONS
+========================= */
+
+.card-actions {
+  display: flex;
+  gap: 7px;
+  padding: 10px;
+}
+
+.card-actions button {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 6px;
+  border-radius: 8px;
+  border: 1px solid #1b3854;
+  background: #0a1829;
+  color: #ffffff;
+  font-size: 12px;
+}
+
+.card-actions button:first-child {
+  background: #168cff;
+  border-color: #168cff;
+}
+
+.card-actions button:hover {
+  border-color: #168cff;
+}
+
+
+/* =========================
    GENRES
 ========================= */
 
@@ -443,6 +478,7 @@ button {
   padding: 55px 30px;
   border-radius: 22px;
   border: 1px solid #19446b;
+
   background:
     radial-gradient(
       circle at 50% 0%,
@@ -507,6 +543,10 @@ button {
   background: #168cff;
   color: white;
   font-weight: 700;
+}
+
+.plan button:hover {
+  background: #3ba3ff;
 }
 
 .popular {
@@ -584,10 +624,73 @@ footer {
   font-size: 25px;
 }
 
+.close-btn:hover {
+  background: #168cff;
+}
+
 .modal-title {
   font-size: 27px;
   margin-right: 50px;
 }
+
+
+/* =========================
+   ANIME DETAIL
+========================= */
+
+.detail-layout {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  gap: 25px;
+}
+
+.detail-poster {
+  width: 100%;
+  border-radius: 12px;
+  display: block;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+}
+
+.detail-info h2 {
+  font-size: 32px;
+  margin-top: 0;
+}
+
+.detail-description {
+  color: #8fa1b7;
+  line-height: 1.7;
+}
+
+.detail-meta {
+  color: #8498ae;
+  margin: 12px 0;
+}
+
+.detail-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.detail-buttons button {
+  padding: 12px 18px;
+  border-radius: 9px;
+  border: 1px solid #23425f;
+  background: #0b1a2d;
+  color: white;
+}
+
+.detail-buttons .blue {
+  background: #168cff;
+  border-color: #168cff;
+}
+
+
+/* =========================
+   PLAYER
+========================= */
 
 .real-player {
   width: 100%;
@@ -605,6 +708,13 @@ footer {
   margin-top: 15px;
 }
 
+.player-controls label {
+  display: block;
+  color: #8093aa;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
 .player-controls select {
   width: 100%;
   padding: 12px;
@@ -614,23 +724,67 @@ footer {
   color: white;
 }
 
-.modal-actions {
-  display: flex;
-  gap: 10px;
+.player-message {
   margin-top: 15px;
+  padding: 13px;
+  background: #0a1829;
+  border: 1px solid #173450;
+  border-radius: 9px;
+  color: #8fa1b7;
 }
 
-.modal-actions button {
+.download-btn {
+  display: inline-flex;
+  margin-top: 15px;
   padding: 12px 18px;
   border-radius: 9px;
-  border: 1px solid #23425f;
-  background: #0b1a2d;
+  background: #168cff;
   color: white;
+  text-decoration: none;
+  font-weight: 700;
 }
 
-.modal-actions .blue {
-  background: #168cff;
+
+/* =========================
+   MODAL FORMS
+========================= */
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-form input,
+.modal-form textarea,
+.modal-form select {
+  width: 100%;
+  padding: 13px;
+  border-radius: 9px;
+  border: 1px solid #1b3853;
+  background: #030a14;
+  color: #ffffff;
+  outline: none;
+}
+
+.modal-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.modal-form input:focus,
+.modal-form textarea:focus,
+.modal-form select:focus {
   border-color: #168cff;
+}
+
+.modal-form button {
+  padding: 13px;
+  border: 0;
+  border-radius: 9px;
+  background: #168cff;
+  color: white;
+  font-weight: 700;
 }
 
 
@@ -654,13 +808,18 @@ footer {
 }
 
 .admin-row input,
-.admin-row select {
+.admin-row select,
+.admin-row textarea {
   width: 100%;
   padding: 12px;
   background: #030a14;
   color: white;
   border: 1px solid #1b3853;
   border-radius: 8px;
+}
+
+.admin-row textarea {
+  min-height: 90px;
 }
 
 .admin-panel button {
@@ -680,10 +839,31 @@ footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
   padding: 12px;
   margin-bottom: 8px;
   background: #0b1828;
   border-radius: 8px;
+}
+
+.admin-item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+.empty-state {
+  grid-column: 1 / -1;
+  padding: 40px 20px;
+  text-align: center;
+  color: #667b93;
+  background: #07111f;
+  border: 1px solid #132b43;
+  border-radius: 14px;
 }
 
 
@@ -731,9 +911,18 @@ footer {
   .plans {
     grid-template-columns: 1fr;
   }
+
+  .detail-layout {
+    grid-template-columns: 180px 1fr;
+  }
+
 }
 
 @media (max-width: 550px) {
+
+  .header {
+    height: 65px;
+  }
 
   .logo {
     font-size: 22px;
@@ -761,8 +950,14 @@ footer {
     font-size: 15px;
   }
 
+  .hero-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .anime-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 
   .poster {
@@ -773,7 +968,37 @@ footer {
     margin: 60px auto;
   }
 
+  .section-title h2 {
+    font-size: 24px;
+  }
+
   .player-controls {
     grid-template-columns: 1fr;
   }
+
+  .detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-poster {
+    max-width: 220px;
+    margin: 0 auto;
+  }
+
+  .detail-info h2 {
+    font-size: 25px;
+  }
+
+  .admin-row {
+    grid-template-columns: 1fr;
+  }
+
+  .modal {
+    padding: 10px;
+  }
+
+  .modal-box {
+    padding: 18px;
+  }
+
 }
